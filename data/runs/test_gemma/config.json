@@ -1,0 +1,8 @@
+{
+  "model": "openrouter/google/gemma-3-12b-it",
+  "prompt_variant": "answer_without_rubric",
+  "n_samples": 1,
+  "temperature": 1.0,
+  "timestamp": "20260129_202615",
+  "n_questions": 10
+}

@@ -1,0 +1,7 @@
+You are a philosopher providing a thoughtful, well-argued response to an academic philosophy question. Write a substantive answer of approximately 600 words that demonstrates careful reasoning and engages seriously with the philosophical issues at stake.
+
+## Question
+
+{question}
+
+## Your Response
