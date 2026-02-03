@@ -23,6 +23,10 @@ python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_with_
 python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_v2_tryhard --samples 25 --run-name rubric_v2_tryhard_25more --provider parasail/fp8 --grade --sample-start 5
 
 
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_without_rubric_2k --samples 2 --run-name norubric_test --provider parasail/fp8 --questions 1,6 --grade
+
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_with_rubric_2k --samples 25 --run-name rubric_25more --provider parasail/fp8 --grade --sample-start 5
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_v2_tryhard --samples 25 --run-name rubric_v2_tryhard_25more --provider parasail/fp8 --grade --sample-start 5
 
 
 ```json

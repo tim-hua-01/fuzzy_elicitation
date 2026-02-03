@@ -43,6 +43,14 @@ df <- read_csv("philosophy_explore/data/v2/all_results.csv") %>%
 
 df %>% group_by(prompt_variant) %>% skim()
 
-df %>% group_by(prompt_variant, question_id) %>% summarize(best_of_n = max(total))%>% 
+df %>% group_by(prompt_variant, question_id) %>% summarize(best_of_n = max(total), medianofn = median(total),
+                                                           worst = min(total))%>% 
   group_by(prompt_variant) %>% skim()
+
+df %<>% mutate(normaizled_score = (total - mean(total))/sd(total))
+
+feols(total ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
+
+feols(normaizled_score ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
+
 
