@@ -54,6 +54,39 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(manifest).encode())
             return
 
+        # API endpoint for available graders for a specific run
+        if self.path.startswith('/api/graders/'):
+            parts = self.path.split('/')
+            if len(parts) >= 5:
+                version = parts[3]
+                run_name = parts[4]
+                run_dir = Path(__file__).parent / 'data' / version / 'runs' / run_name
+
+                graders = []
+                other_graders = []
+                if run_dir.exists():
+                    # Find all grades files
+                    for f in run_dir.iterdir():
+                        if f.name.startswith('grades') and f.suffix == '.jsonl':
+                            if f.name == 'grades.jsonl':
+                                # Default grader goes first
+                                graders.append({'name': 'default', 'file': 'grades.jsonl'})
+                            else:
+                                # Extract model name from grades_{model}.jsonl
+                                model_name = f.name[7:-6]  # Remove 'grades_' and '.jsonl'
+                                other_graders.append({'name': model_name, 'file': f.name})
+                
+                # Sort other graders alphabetically and append after default
+                other_graders.sort(key=lambda x: x['name'])
+                graders.extend(other_graders)
+
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps(graders).encode())
+                return
+
         return super().do_GET()
 
     def end_headers(self):

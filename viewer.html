@@ -395,6 +395,30 @@
             color: #888;
         }
 
+        .grader-selector {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 6px;
+        }
+
+        .grader-selector label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .grader-selector select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+        }
+
         .no-grades {
             color: #888;
             font-style: italic;
@@ -451,7 +475,13 @@
             <div class="resizer" id="grades-resizer"></div>
 
             <div class="grades-panel" id="grades-panel">
-                <div class="no-grades">No grades loaded</div>
+                <div class="grader-selector" id="grader-selector" style="display: none;">
+                    <label>Grading Model:</label>
+                    <select id="grader-select"></select>
+                </div>
+                <div id="grades-content">
+                    <div class="no-grades">No grades loaded</div>
+                </div>
             </div>
         </div>
     </div>
@@ -462,6 +492,8 @@
         let answers = [];
         let grades = [];
         let currentIndex = 0;
+        let availableGraders = [];
+        let currentGrader = null;
 
         // Format score key to display name
         function formatScoreName(key) {
@@ -555,17 +587,59 @@
                 console.error('Failed to load answers:', e);
             }
 
-            // Load grades
+            // Load available graders
             try {
-                const gradesResponse = await fetch(`data/${currentRubricVersion}/runs/${runName}/grades.jsonl`);
+                const gradersResponse = await fetch(`/api/graders/${currentRubricVersion}/${runName}`);
+                availableGraders = await gradersResponse.json();
+                
+                // Update grader selector
+                const graderSelect = document.getElementById('grader-select');
+                const graderSelector = document.getElementById('grader-selector');
+                
+                if (availableGraders.length > 1) {
+                    graderSelect.innerHTML = '';
+                    availableGraders.forEach(grader => {
+                        const option = document.createElement('option');
+                        option.value = grader.file;
+                        option.textContent = grader.name;
+                        graderSelect.appendChild(option);
+                    });
+                    graderSelector.style.display = 'block';
+                    currentGrader = availableGraders[0].file;
+                } else if (availableGraders.length === 1) {
+                    graderSelector.style.display = 'none';
+                    currentGrader = availableGraders[0].file;
+                } else {
+                    graderSelector.style.display = 'none';
+                    currentGrader = 'grades.jsonl';
+                }
+            } catch (e) {
+                console.error('Failed to load graders:', e);
+                availableGraders = [{ name: 'default', file: 'grades.jsonl' }];
+                currentGrader = 'grades.jsonl';
+                document.getElementById('grader-selector').style.display = 'none';
+            }
+
+            // Load grades with current grader
+            await loadGradesForCurrentGrader();
+
+            updateUI();
+            updateActiveItem();
+        }
+
+        async function loadGradesForCurrentGrader() {
+            if (!currentSource || currentSource.type !== 'run') return;
+
+            try {
+                const gradesResponse = await fetch(`data/${currentRubricVersion}/runs/${currentSource.name}/${currentGrader}`);
                 const gradesText = await gradesResponse.text();
                 grades = gradesText.trim().split('\n').filter(l => l).map(line => JSON.parse(line));
             } catch (e) {
                 grades = [];
+                console.error('Failed to load grades:', e);
             }
 
-            updateUI();
-            updateActiveItem();
+            renderCurrentAnswer();
         }
 
         async function loadHumanGrades(graderFile) {
@@ -639,11 +713,11 @@
 
         function renderCurrentAnswer() {
             const panel = document.getElementById('answer-panel');
-            const gradesPanel = document.getElementById('grades-panel');
+            const gradesContent = document.getElementById('grades-content');
 
             if (answers.length === 0) {
                 panel.innerHTML = '<div class="empty-state">No answers loaded</div>';
-                gradesPanel.innerHTML = '<div class="no-grades">No grades available</div>';
+                gradesContent.innerHTML = '<div class="no-grades">No grades available</div>';
                 return;
             }
 
@@ -730,9 +804,9 @@
                     `;
                 }
 
-                gradesPanel.innerHTML = gradesHtml;
+                gradesContent.innerHTML = gradesHtml;
             } else {
-                gradesPanel.innerHTML = '<div class="no-grades">No grades for this answer</div>';
+                gradesContent.innerHTML = '<div class="no-grades">No grades for this answer</div>';
             }
         }
 
@@ -808,8 +882,11 @@
                     currentSource = null;
                     answers = [];
                     grades = [];
+                    availableGraders = [];
+                    currentGrader = null;
                     document.getElementById('answer-panel').innerHTML = '<div class="empty-state">Select a run or human baseline to view</div>';
-                    document.getElementById('grades-panel').innerHTML = '<div class="no-grades">No grades loaded</div>';
+                    document.getElementById('grades-content').innerHTML = '<div class="no-grades">No grades loaded</div>';
+                    document.getElementById('grader-selector').style.display = 'none';
                     refreshSidebar();
                 };
             });
@@ -832,6 +909,12 @@
             document.getElementById('answer-select').onchange = (e) => {
                 currentIndex = parseInt(e.target.value);
                 renderCurrentAnswer();
+            };
+
+            // Grader select handler
+            document.getElementById('grader-select').onchange = async (e) => {
+                currentGrader = e.target.value;
+                await loadGradesForCurrentGrader();
             };
 
             // Keyboard navigation
