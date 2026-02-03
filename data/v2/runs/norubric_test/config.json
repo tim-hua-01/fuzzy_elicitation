@@ -6,6 +6,7 @@
   "provider": "parasail/fp8",
   "question_indices": "1,6",
   "rubric": "response_rubric_v2",
-  "timestamp": "20260202_201434",
-  "n_questions": 2
+  "timestamp": "20260203_080048",
+  "n_questions": 2,
+  "sample_start": 0
 }
