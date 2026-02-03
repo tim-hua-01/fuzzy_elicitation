@@ -43,5 +43,6 @@ df <- read_csv("philosophy_explore/data/v2/all_results.csv") %>%
 
 df %>% group_by(prompt_variant) %>% skim()
 
-
+df %>% group_by(prompt_variant, question_id) %>% summarize(best_of_n = max(total))%>% 
+  group_by(prompt_variant) %>% skim()
 

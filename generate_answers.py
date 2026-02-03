@@ -21,7 +21,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
-from tqdm.asyncio import tqdm_asyncio
+from tqdm import tqdm
 
 load_dotenv()
 
@@ -89,25 +89,25 @@ async def generate_openai_single(
     # Strip "openai/" prefix
     model_name = model.replace("openai/", "")
 
-    async with semaphore:
-        for attempt in range(MAX_RETRIES):
-            try:
+    for attempt in range(MAX_RETRIES):
+        try:
+            async with semaphore:
                 response = await client.responses.create(
                     model=model_name,
                     input=[{"role": "user", "content": prompt}],
                     temperature=temperature,
                 )
-                return {
-                    "content": response.output_text,
-                    "reasoning": None,  # OpenAI API doesn't expose reasoning tokens
-                }
-            except Exception as e:
-                if attempt < MAX_RETRIES - 1:
-                    delay = RETRY_DELAY_BASE ** (attempt + 1)
-                    print(f"OpenAI request failed (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s: {e}")
-                    await asyncio.sleep(delay)
-                else:
-                    raise
+            return {
+                "content": response.output_text,
+                "reasoning": None,  # OpenAI API doesn't expose reasoning tokens
+            }
+        except Exception as e:
+            if attempt < MAX_RETRIES - 1:
+                delay = RETRY_DELAY_BASE ** (attempt + 1)
+                print(f"OpenAI request failed (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s: {e}")
+                await asyncio.sleep(delay)
+            else:
+                raise
 
 
 async def generate_openrouter_single(
@@ -123,45 +123,45 @@ async def generate_openrouter_single(
     # Strip "openrouter/" prefix
     model_name = model.replace("openrouter/", "")
 
-    async with semaphore:
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
 
-        payload = {
-            "model": model_name,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": temperature,
-        }
+    payload = {
+        "model": model_name,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+    }
 
-        if provider:
-            payload["provider"] = {"order": [provider]}
+    if provider:
+        payload["provider"] = {"order": [provider]}
 
-        for attempt in range(MAX_RETRIES):
-            try:
+    for attempt in range(MAX_RETRIES):
+        try:
+            async with semaphore:
                 response = await http_client.post(
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers=headers,
                     json=payload,
                 )
-                if response.status_code != 200:
-                    print(f"Error {response.status_code}: {response.text}")
-                response.raise_for_status()
-                data = response.json()
+            if response.status_code != 200:
+                print(f"Error {response.status_code}: {response.text}")
+            response.raise_for_status()
+            data = response.json()
 
-                message = data["choices"][0]["message"]
-                return {
-                    "content": message["content"],
-                    "reasoning": message.get("reasoning"),
-                }
-            except Exception as e:
-                if attempt < MAX_RETRIES - 1:
-                    delay = RETRY_DELAY_BASE ** (attempt + 1)
-                    print(f"OpenRouter request failed (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s: {e}")
-                    await asyncio.sleep(delay)
-                else:
-                    raise
+            message = data["choices"][0]["message"]
+            return {
+                "content": message["content"],
+                "reasoning": message.get("reasoning"),
+            }
+        except Exception as e:
+            if attempt < MAX_RETRIES - 1:
+                delay = RETRY_DELAY_BASE ** (attempt + 1)
+                print(f"OpenRouter request failed (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s: {e}")
+                await asyncio.sleep(delay)
+            else:
+                raise
 
 
 async def generate_single_sample(
@@ -233,7 +233,8 @@ async def generate_answers(
     provider: str | None = None,
     question_indices: str | None = None,
     rubric_name: str = "response_rubric_v2",
-) -> Path:
+    sample_start: int = 0,
+) -> tuple[Path, str]:
     """Generate answers for all questions and save to a run folder."""
     # Setup
     base_dir = Path(__file__).parent
@@ -271,6 +272,7 @@ async def generate_answers(
         "rubric": rubric_name,
         "timestamp": timestamp,
         "n_questions": len(questions),
+        "sample_start": sample_start,
     }
     with open(run_dir / "config.json", "w") as f:
         json.dump(config, f, indent=2)
@@ -286,7 +288,7 @@ async def generate_answers(
     print(f"  Rubric:      {rubric_name}")
     print(f"  Temperature: {temperature}")
     print(f"  Questions:   {len(questions)}")
-    print(f"  Samples:     {n_samples} per question")
+    print(f"  Samples:     {n_samples} per question (indices {sample_start}-{sample_start + n_samples - 1})")
     print(f"  Total calls: {total_samples}")
     print(f"  Output:      {run_dir}")
     print("=" * 50 + "\n")
@@ -313,16 +315,32 @@ async def generate_answers(
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
 
     try:
-        tasks = [
+        coros = [
             generate_single_sample(
                 semaphore, q, sample_idx, template, rubric, model, prompt_name,
                 temperature, is_openai, client, http_client, api_key, provider
             )
             for q in questions
-            for sample_idx in range(n_samples)
+            for sample_idx in range(sample_start, sample_start + n_samples)
         ]
 
-        results = await tqdm_asyncio.gather(*tasks, desc="Generating", unit="sample", return_exceptions=True)
+        # Use gather with return_exceptions and progress bar
+        print(f"Generating {len(coros)} samples...")
+        pbar = tqdm(total=len(coros), desc="Generating", unit="sample")
+        
+        async def with_progress(coro):
+            try:
+                return await coro
+            finally:
+                # Always advance the bar, even on failure
+                pbar.update(1)
+
+        
+        results = await asyncio.gather(
+            *[with_progress(c) for c in coros],
+            return_exceptions=True,
+        )
+        pbar.close()
     finally:
         # Close http client if created
         if http_client:
@@ -334,7 +352,8 @@ async def generate_answers(
     for i, result in enumerate(results):
         if isinstance(result, Exception):
             q_idx = i // n_samples
-            sample_idx = i % n_samples
+            offset = i % n_samples
+            sample_idx = sample_start + offset  # Fix: report actual sample index
             question_id = Path(questions[q_idx]["source_paper"]).stem
             failures.append((question_id, sample_idx, result))
         else:
@@ -375,6 +394,7 @@ async def main():
     parser.add_argument("--rubric", default="response_rubric_v2", help="Rubric file name without .md (default: response_rubric_v2)")
     parser.add_argument("--grade", action="store_true", help="Automatically grade answers after generation")
     parser.add_argument("--grader", help="Grader model (default: same as --model)")
+    parser.add_argument("--sample-start", type=int, default=0, help="Starting sample index (default: 0)")
 
     args = parser.parse_args()
 
@@ -387,6 +407,7 @@ async def main():
         provider=args.provider,
         question_indices=args.questions,
         rubric_name=args.rubric,
+        sample_start=args.sample_start,
     )
 
     # Auto-grade if requested
