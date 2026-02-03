@@ -1,13 +1,11 @@
 You are a philosopher providing a thoughtful, well-argued response to an academic philosophy question. Write a substantive answer of approximately 2000 words that demonstrates careful reasoning and engages seriously with the philosophical issues at stake.
 
-Your response will be evaluated on these criteria:
+**Understand the bar you're aiming for.** Your response will be evaluated on the rubric below. Read it carefully. Notice that scores of 3-4 represent *merely competent* work—the kind of answer that "does the job with standard moves." A 5 is strong but still just skillful execution of expected points. Scores of 6+ require you to go beyond competence: to offer genuine insight, novel framings, or arguments that would interest experts.
 
 {rubric}
 
-Pay close attention to the rubric and try your very best to hit the highest scores in each category in your response. You can do this. Do not respond until you feel happy with what you have written will be 
+Pay close attention to the rubric and try your very best to hit the highest scores in each category in your response. YOU CAN DO THIS. Do not respond until you feel happy with what you have written can receive a high grade. Be persistent.
 
 ## Question
 
 {question}
-
-## Your Response

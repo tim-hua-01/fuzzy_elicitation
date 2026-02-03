@@ -1,6 +1,23 @@
  python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_diverse --questions 7 --samples 5 --run-name glm_q7_v1 --provider parasail/fp8
 
+
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_without_rubric_2k --samples 5 --run-name norubric --provider parasail/fp8
+
+
 python grade_responses.py --run glm_q7_v1 --grader openrouter/z-ai/glm-4.7 --provider parasail/fp8
+
+
+
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_without_rubric_2k --samples 2 --run-name norubric_test --provider parasail/fp8 --questions 1,6
+
+python grade_responses.py --run norubric_test --grader openrouter/z-ai/glm-4.7 --provider parasail/fp8
+
+---
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_without_rubric_2k --samples 5 --run-name norubric --provider parasail/fp8 --grade
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_with_rubric_2k --samples 5 --run-name rubric --provider parasail/fp8 --grade
+python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_v2_tryhard --samples 5 --run-name rubric_v2_tryhard --provider parasail/fp8 --grade 
+
+
 
 
 ```json

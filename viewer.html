@@ -22,11 +22,45 @@
         /* Sidebar */
         .sidebar {
             width: 280px;
+            min-width: 180px;
+            max-width: 500px;
             background: #1a1a2e;
             color: #eee;
             padding: 20px;
             overflow-y: auto;
             flex-shrink: 0;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 6px;
+            background: transparent;
+            cursor: col-resize;
+            flex-shrink: 0;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .resizer:hover,
+        .resizer.active {
+            background: #0f3460;
+        }
+
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 1px;
+        }
+
+        .resizer:hover::after,
+        .resizer.active::after {
+            background: #fff;
         }
 
         .sidebar h2 {
@@ -254,17 +288,41 @@
             border-radius: 6px;
             font-size: 13px;
             line-height: 1.6;
-            white-space: pre-wrap;
-            font-family: 'SF Mono', Monaco, monospace;
             max-height: 400px;
             overflow-y: auto;
+        }
+
+        .reasoning-content p {
+            margin-bottom: 1em;
+        }
+
+        .reasoning-content h1, .reasoning-content h2, .reasoning-content h3 {
+            margin: 1em 0 0.5em 0;
+        }
+
+        .reasoning-content code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .reasoning-content pre {
+            background: #e8e8e8;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
         }
 
         /* Grades panel */
         .grades-panel {
             width: 350px;
+            min-width: 200px;
+            max-width: 600px;
             background: white;
-            border-left: 1px solid #ddd;
             padding: 20px;
             overflow-y: auto;
             flex-shrink: 0;
@@ -319,6 +377,9 @@
             border-radius: 4px;
         }
 
+        .score-8 { background: #1b5e20; color: #fff; }
+        .score-7 { background: #2e7d32; color: #fff; }
+        .score-6 { background: #43a047; color: #fff; }
         .score-5 { background: #c8e6c9; color: #2e7d32; }
         .score-4 { background: #dcedc8; color: #558b2f; }
         .score-3 { background: #fff9c4; color: #f9a825; }
@@ -359,7 +420,7 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="rubric-toggle">
             <button class="rubric-btn active" data-version="v1">v1</button>
             <button class="rubric-btn" data-version="v2">v2</button>
@@ -371,6 +432,8 @@
         <h2>Model Runs</h2>
         <div id="runs-list"></div>
     </div>
+
+    <div class="resizer" id="sidebar-resizer"></div>
 
     <div class="main">
         <div class="header">
@@ -384,6 +447,8 @@
             <div class="answer-panel" id="answer-panel">
                 <div class="empty-state">Select a run or human baseline to view</div>
             </div>
+
+            <div class="resizer" id="grades-resizer"></div>
 
             <div class="grades-panel" id="grades-panel">
                 <div class="no-grades">No grades loaded</div>
@@ -617,7 +682,7 @@
                 answerHtml += `
                     <details class="reasoning-toggle">
                         <summary>Model Reasoning (${answer.reasoning.length.toLocaleString()} chars)</summary>
-                        <div class="reasoning-content">${escapeHtml(answer.reasoning)}</div>
+                        <div class="reasoning-content">${marked.parse(answer.reasoning)}</div>
                     </details>
                 `;
             }
@@ -629,7 +694,8 @@
             if (grade && grade.scores) {
                 const scores = grade.scores;
                 const total = scores.total || Object.values(scores).reduce((a, b) => typeof b === 'number' ? a + b : a, 0);
-                const maxScore = (Object.keys(scores).length - 1) * 5;  // -1 for 'total' key
+                const maxPerCriterion = currentRubricVersion === 'v2' ? 8 : 5;
+                const maxScore = (Object.keys(scores).length - 1) * maxPerCriterion;  // -1 for 'total' key
 
                 let gradesHtml = `
                     <h3>Grades</h3>
@@ -659,7 +725,7 @@
                     gradesHtml += `
                         <details class="reasoning-toggle" style="margin-top: 15px;">
                             <summary>Grader Reasoning</summary>
-                            <div class="reasoning-content">${escapeHtml(grade.grader_reasoning)}</div>
+                            <div class="reasoning-content">${marked.parse(grade.grader_reasoning)}</div>
                         </details>
                     `;
                 }
@@ -676,8 +742,63 @@
             return div.innerHTML;
         }
 
+        // Resizer functionality
+        function initResizers() {
+            const sidebarResizer = document.getElementById('sidebar-resizer');
+            const gradesResizer = document.getElementById('grades-resizer');
+            const sidebar = document.getElementById('sidebar');
+            const gradesPanel = document.getElementById('grades-panel');
+
+            let isResizing = false;
+            let currentResizer = null;
+
+            function startResize(e, resizer) {
+                isResizing = true;
+                currentResizer = resizer;
+                resizer.classList.add('active');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            }
+
+            function stopResize() {
+                if (isResizing) {
+                    isResizing = false;
+                    if (currentResizer) {
+                        currentResizer.classList.remove('active');
+                    }
+                    currentResizer = null;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            }
+
+            function resize(e) {
+                if (!isResizing) return;
+
+                if (currentResizer === sidebarResizer) {
+                    const newWidth = e.clientX;
+                    if (newWidth >= 180 && newWidth <= 500) {
+                        sidebar.style.width = newWidth + 'px';
+                    }
+                } else if (currentResizer === gradesResizer) {
+                    const containerRect = gradesPanel.parentElement.getBoundingClientRect();
+                    const newWidth = containerRect.right - e.clientX;
+                    if (newWidth >= 200 && newWidth <= 600) {
+                        gradesPanel.style.width = newWidth + 'px';
+                    }
+                }
+            }
+
+            sidebarResizer.addEventListener('mousedown', (e) => startResize(e, sidebarResizer));
+            gradesResizer.addEventListener('mousedown', (e) => startResize(e, gradesResizer));
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
         // Initialize
         async function init() {
+            initResizers();
             // Rubric version toggle
             document.querySelectorAll('.rubric-btn').forEach(btn => {
                 btn.onclick = () => {

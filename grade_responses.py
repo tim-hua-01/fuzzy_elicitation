@@ -25,7 +25,7 @@ from tqdm.asyncio import tqdm_asyncio
 
 load_dotenv()
 
-MAX_CONCURRENT = 10
+MAX_CONCURRENT = 25
 
 
 def get_rubric_version(rubric_name: str) -> str:
@@ -79,6 +79,7 @@ def parse_grade_response(response_text: str) -> dict:
 
 
 async def grade_openai(
+    semaphore: asyncio.Semaphore,
     client: AsyncOpenAI,
     prompt: str,
     model: str,
@@ -86,11 +87,12 @@ async def grade_openai(
     """Grade using OpenAI API."""
     model_name = model.replace("openai/", "")
 
-    response = await client.responses.create(
-        model=model_name,
-        input=[{"role": "user", "content": prompt}],
-        temperature=1, 
-    )
+    async with semaphore:
+        response = await client.responses.create(
+            model=model_name,
+            input=[{"role": "user", "content": prompt}],
+            temperature=1, 
+        )
 
     return {
         "content": response.output_text,
@@ -100,6 +102,7 @@ async def grade_openai(
 
 async def grade_openrouter(
     semaphore: asyncio.Semaphore,
+    http_client: httpx.AsyncClient,
     api_key: str,
     prompt: str,
     model: str,
@@ -123,14 +126,13 @@ async def grade_openrouter(
         if provider:
             payload["provider"] = {"order": [provider]}
 
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            response = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-            )
-            response.raise_for_status()
-            data = response.json()
+        response = await http_client.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=payload,
+        )
+        response.raise_for_status()
+        data = response.json()
 
         message = data["choices"][0]["message"]
         return {
@@ -139,60 +141,84 @@ async def grade_openrouter(
         }
 
 
+MAX_RETRIES = 3
+
+
 async def grade_single(
     entry: dict,
     grader_model: str,
     rubric: str,
     openai_client: AsyncOpenAI | None,
+    http_client: httpx.AsyncClient | None,
     openrouter_key: str | None,
     semaphore: asyncio.Semaphore,
     provider: str | None = None,
 ) -> dict:
-    """Grade a single answer entry."""
+    """Grade a single answer entry with retries for parsing failures."""
     prompt = build_grading_prompt(entry["question"], entry["answer"], rubric)
-
     is_openai = grader_model.startswith("openai/")
 
-    try:
-        if is_openai:
-            response_data = await grade_openai(openai_client, prompt, grader_model)
-        else:
-            response_data = await grade_openrouter(semaphore, openrouter_key, prompt, grader_model, provider)
+    last_error = None
+    last_response = None
 
-        scores = parse_grade_response(response_data["content"])
+    for attempt in range(MAX_RETRIES):
+        try:
+            if is_openai:
+                response_data = await grade_openai(semaphore, openai_client, prompt, grader_model)
+            else:
+                response_data = await grade_openrouter(semaphore, http_client, openrouter_key, prompt, grader_model, provider)
 
-        # Ensure total is calculated (dynamic - sum all numeric values except 'total')
-        if "total" not in scores:
-            scores["total"] = sum(v for k, v in scores.items() if isinstance(v, (int, float)) and k != "total")
+            last_response = response_data.get("content", "")
+            scores = parse_grade_response(response_data["content"])
 
-        result = {
-            "question_id": entry["question_id"],
-            "model": entry.get("model", "human"),
-            "prompt_variant": entry.get("prompt_variant", ""),
-            "sample_idx": entry.get("sample_idx", 0),
-            "is_human": entry.get("is_human", False),
-            "grader_model": grader_model,
-            "scores": scores,
-            "error": None,
-        }
-        
-        # Include reasoning if present
-        if response_data.get("reasoning"):
-            result["grader_reasoning"] = response_data["reasoning"]
-        
-        return result
+            # Ensure total is calculated (dynamic - sum all numeric values except 'total')
+            if "total" not in scores:
+                scores["total"] = sum(v for k, v in scores.items() if isinstance(v, (int, float)) and k != "total")
 
-    except Exception as e:
-        return {
-            "question_id": entry["question_id"],
-            "model": entry.get("model", "human"),
-            "prompt_variant": entry.get("prompt_variant", ""),
-            "sample_idx": entry.get("sample_idx", 0),
-            "is_human": entry.get("is_human", False),
-            "grader_model": grader_model,
-            "scores": None,
-            "error": str(e),
-        }
+            result = {
+                "question_id": entry["question_id"],
+                "model": entry.get("model", "human"),
+                "prompt_variant": entry.get("prompt_variant", ""),
+                "sample_idx": entry.get("sample_idx", 0),
+                "is_human": entry.get("is_human", False),
+                "grader_model": grader_model,
+                "scores": scores,
+                "error": None,
+            }
+
+            # Include reasoning if present
+            if response_data.get("reasoning"):
+                result["grader_reasoning"] = response_data["reasoning"]
+
+            # Note if retries were needed
+            if attempt > 0:
+                result["retries"] = attempt
+
+            return result
+
+        except json.JSONDecodeError as e:
+            last_error = f"JSON parse error (attempt {attempt + 1}/{MAX_RETRIES}): {e}"
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(0.5)  # Brief delay before retry
+            continue
+
+        except Exception as e:
+            # Non-retryable error
+            last_error = str(e)
+            break
+
+    # All retries failed
+    return {
+        "question_id": entry["question_id"],
+        "model": entry.get("model", "human"),
+        "prompt_variant": entry.get("prompt_variant", ""),
+        "sample_idx": entry.get("sample_idx", 0),
+        "is_human": entry.get("is_human", False),
+        "grader_model": grader_model,
+        "scores": None,
+        "error": last_error,
+        "last_response": last_response[:500] if last_response else None,  # For debugging
+    }
 
 
 def append_to_csv(results: list[dict], csv_path: Path):
@@ -267,8 +293,16 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
             if line.strip():
                 entries.append(json.loads(line))
 
-    print(f"Grading {len(entries)} answers from run: {run_name}")
-    print(f"Grader: {grader_model}")
+    # Nice config printout
+    print("\n" + "=" * 50)
+    print("GRADE ANSWERS")
+    print("=" * 50)
+    print(f"  Run:         {run_name}")
+    print(f"  Grader:      {grader_model}")
+    print(f"  Provider:    {provider or '(default)'}")
+    print(f"  Rubric:      {rubric_name}")
+    print(f"  Answers:     {len(entries)}")
+    print("=" * 50 + "\n")
 
     # Setup grader
     rubric = load_rubric(rubric_name)
@@ -276,6 +310,7 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
     is_openai = grader_model.startswith("openai/")
 
     openai_client = None
+    http_client = None
     openrouter_key = None
 
     if is_openai:
@@ -287,14 +322,20 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
         openrouter_key = os.environ.get("OPENROUTER_API_KEY")
         if not openrouter_key:
             raise ValueError("OPENROUTER_API_KEY not set")
+        http_client = httpx.AsyncClient(timeout=240.0)
 
-    # Grade all entries concurrently
-    tasks = [
-        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore, provider)
-        for entry in entries
-    ]
+    try:
+        # Grade all entries concurrently
+        tasks = [
+            grade_single(entry, grader_model, rubric, openai_client, http_client, openrouter_key, semaphore, provider)
+            for entry in entries
+        ]
 
-    results = await tqdm_asyncio.gather(*tasks, desc="Grading", unit="ans")
+        results = await tqdm_asyncio.gather(*tasks, desc="Grading", unit="ans")
+    finally:
+        # Close http client if created
+        if http_client:
+            await http_client.aclose()
 
     # Add answers to results for CSV
     for r, entry in zip(results, entries):
@@ -342,8 +383,15 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
                     "is_human": True,
                 })
 
-    print(f"Grading {len(entries)} human baseline answers")
-    print(f"Grader: {grader_model}")
+    # Nice config printout
+    print("\n" + "=" * 50)
+    print("GRADE HUMAN BASELINES")
+    print("=" * 50)
+    print(f"  Grader:      {grader_model}")
+    print(f"  Provider:    {provider or '(default)'}")
+    print(f"  Rubric:      {rubric_name}")
+    print(f"  Answers:     {len(entries)}")
+    print("=" * 50 + "\n")
 
     # Setup grader
     rubric = load_rubric(rubric_name)
@@ -351,6 +399,7 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
     is_openai = grader_model.startswith("openai/")
 
     openai_client = None
+    http_client = None
     openrouter_key = None
 
     if is_openai:
@@ -362,14 +411,20 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
         openrouter_key = os.environ.get("OPENROUTER_API_KEY")
         if not openrouter_key:
             raise ValueError("OPENROUTER_API_KEY not set")
+        http_client = httpx.AsyncClient(timeout=240.0)
 
-    # Grade all entries concurrently
-    tasks = [
-        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore, provider)
-        for entry in entries
-    ]
+    try:
+        # Grade all entries concurrently
+        tasks = [
+            grade_single(entry, grader_model, rubric, openai_client, http_client, openrouter_key, semaphore, provider)
+            for entry in entries
+        ]
 
-    results = await tqdm_asyncio.gather(*tasks, desc="Grading humans", unit="ans")
+        results = await tqdm_asyncio.gather(*tasks, desc="Grading humans", unit="ans")
+    finally:
+        # Close http client if created
+        if http_client:
+            await http_client.aclose()
 
     # Add answers to results for CSV
     for r, entry in zip(results, entries):
