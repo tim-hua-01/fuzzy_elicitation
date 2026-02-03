@@ -1,3 +1,4 @@
+setwd("~/Documents/aisafety_githubs/philosophy_explore")
 if (!require(tidyverse)) install.packages("tidyverse"); library(tidyverse)
 if (!require(magrittr)) install.packages("magrittr"); library(magrittr)
 library(jsonlite)
