@@ -7,10 +7,22 @@ Run this and open http://localhost:8000/viewer.html
 import http.server
 import json
 import os
+import socket
 import socketserver
 from pathlib import Path
 
 PORT = 8000
+
+def get_local_ip():
+    """Get the local IP address of this machine."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "unknown"
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -51,10 +63,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     os.chdir(Path(__file__).parent)
 
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving at http://localhost:{PORT}")
-        print(f"Open http://localhost:{PORT}/viewer.html")
-        print("Press Ctrl+C to stop")
+    with socketserver.TCPServer(("0.0.0.0", PORT), Handler) as httpd:
+        local_ip = get_local_ip()
+        print(f"Server started on port {PORT}")
+        print(f"\nLocal access:")
+        print(f"  http://localhost:{PORT}/viewer.html")
+        print(f"\nNetwork access (same LAN):")
+        print(f"  http://{local_ip}:{PORT}/viewer.html")
+        print(f"\nFor external access (internet), use one of these options:")
+        print(f"  1. Cloudflared tunnel: cloudflared tunnel --url http://localhost:{PORT}")
+        print(f"  2. ngrok: ngrok http {PORT}")
+        print(f"  3. SSH tunnel: ssh -L {PORT}:localhost:{PORT} user@this-machine")
+        print("\nPress Ctrl+C to stop")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
