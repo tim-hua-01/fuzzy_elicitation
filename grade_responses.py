@@ -232,7 +232,7 @@ def append_to_csv(results: list[dict], csv_path: Path):
 
     # Build fieldnames dynamically
     base_fields = ["question_id", "answer", "model", "prompt_variant", "sample_idx", "is_human", "grader_model"]
-    fieldnames = base_fields + score_keys + ["total", "timestamp"]
+    fieldnames = base_fields + score_keys + ["total", "timestamp", "answer_char_count", "reasoning_char_count"]
 
     file_exists = csv_path.exists() and csv_path.stat().st_size > 0
     timestamp = datetime.now().isoformat()
@@ -258,15 +258,23 @@ def append_to_csv(results: list[dict], csv_path: Path):
             if r["scores"] is None:
                 continue
 
+            # Calculate character counts
+            answer_text = r.get("answer", "")
+            reasoning_text = r.get("grader_reasoning", "")
+            answer_char_count = len(answer_text) if answer_text else 0
+            reasoning_char_count = len(reasoning_text) if reasoning_text else 0
+
             row = {
                 "question_id": r["question_id"],
-                "answer": r.get("answer", "")[:500],  # Truncate for CSV
+                "answer": answer_text[:500],  # Truncate for CSV
                 "model": r["model"],
                 "prompt_variant": r["prompt_variant"],
                 "sample_idx": r["sample_idx"],
                 "is_human": r["is_human"],
                 "grader_model": r["grader_model"],
                 "timestamp": timestamp,
+                "answer_char_count": answer_char_count,
+                "reasoning_char_count": reasoning_char_count,
             }
 
             # Add all score fields dynamically

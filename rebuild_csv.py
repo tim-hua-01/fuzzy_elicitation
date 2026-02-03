@@ -75,10 +75,16 @@ def process_run(run_dir: Path, errors: List[str]) -> List[Dict]:
             scores['precision_distinctions'] = scores.pop('precision_in_distinctions')
             errors.append(f"Fixed field name in {run_dir.name}: question={question_id}, sample={sample_idx}")
         
+        # Calculate character counts
+        answer_text = answer.get('answer', '')
+        reasoning_text = answer.get('reasoning', '')
+        answer_char_count = len(answer_text) if answer_text else 0
+        reasoning_char_count = len(reasoning_text) if reasoning_text else 0
+        
         # Build CSV row
         row = {
             'question_id': question_id,
-            'answer': answer.get('answer', ''),
+            'answer': answer_text,
             'model': answer.get('model', ''),
             'prompt_variant': answer.get('prompt_variant', ''),
             'sample_idx': sample_idx,
@@ -92,6 +98,8 @@ def process_run(run_dir: Path, errors: List[str]) -> List[Dict]:
             'example_quality': scores.get('example_quality', ''),
             'total': scores.get('total', ''),
             'timestamp': grade.get('timestamp', ''),
+            'answer_char_count': answer_char_count,
+            'reasoning_char_count': reasoning_char_count,
         }
         rows.append(row)
     
@@ -121,7 +129,7 @@ def main():
             'question_id', 'answer', 'model', 'prompt_variant', 'sample_idx',
             'is_human', 'grader_model', 'thesis_clarity', 'argumentative_soundness',
             'dialectical_engagement', 'precision_distinctions', 'substantive_contribution',
-            'example_quality', 'total', 'timestamp'
+            'example_quality', 'total', 'timestamp', 'answer_char_count', 'reasoning_char_count'
         ]
         
         with open(output_file, 'w', newline='') as f:
