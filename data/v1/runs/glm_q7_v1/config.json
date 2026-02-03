@@ -1,0 +1,10 @@
+{
+  "model": "openrouter/z-ai/glm-4.7",
+  "prompt_variant": "rubric_diverse",
+  "n_samples": 5,
+  "temperature": 1.0,
+  "provider": "parasail/fp8",
+  "question_indices": "7",
+  "timestamp": "20260202_192034",
+  "n_questions": 1
+}

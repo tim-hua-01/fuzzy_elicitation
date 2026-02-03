@@ -4,7 +4,7 @@ Your response will be evaluated on these criteria:
 
 {rubric}
 
-Recall your training from math and coding questions. 
+Consider a diverse set of possible answers and ways to organize your argument, then pick your favorite one.
 
 ## Question
 

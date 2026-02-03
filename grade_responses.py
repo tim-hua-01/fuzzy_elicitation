@@ -28,9 +28,20 @@ load_dotenv()
 MAX_CONCURRENT = 10
 
 
-def load_rubric() -> str:
+def get_rubric_version(rubric_name: str) -> str:
+    """Extract version from rubric name (e.g., 'response_rubric_v2' -> 'v2')."""
+    if "_v" in rubric_name:
+        return "v" + rubric_name.split("_v")[-1]
+    return "v1"  # default
+
+
+def load_rubric(rubric_name: str = "response_rubric_v2") -> str:
     """Load the full rubric including output format."""
-    rubric_path = Path(__file__).parent / "response_rubric.md"
+    rubric_path = Path(__file__).parent / f"{rubric_name}.md"
+    if not rubric_path.exists():
+        # Fallback to original
+        rubric_path = Path(__file__).parent / "response_rubric.md"
+
     with open(rubric_path) as f:
         return f.read()
 
@@ -71,7 +82,7 @@ async def grade_openai(
     client: AsyncOpenAI,
     prompt: str,
     model: str,
-) -> str:
+) -> dict[str, str | None]:
     """Grade using OpenAI API."""
     model_name = model.replace("openai/", "")
 
@@ -81,7 +92,10 @@ async def grade_openai(
         temperature=1, 
     )
 
-    return response.output_text
+    return {
+        "content": response.output_text,
+        "reasoning": None,  # OpenAI API doesn't expose reasoning tokens
+    }
 
 
 async def grade_openrouter(
@@ -90,7 +104,7 @@ async def grade_openrouter(
     prompt: str,
     model: str,
     provider: str | None = None,
-) -> str:
+) -> dict[str, str | None]:
     """Grade using OpenRouter API."""
     model_name = model.replace("openrouter/", "")
 
@@ -118,7 +132,11 @@ async def grade_openrouter(
             response.raise_for_status()
             data = response.json()
 
-        return data["choices"][0]["message"]["content"]
+        message = data["choices"][0]["message"]
+        return {
+            "content": message["content"],
+            "reasoning": message.get("reasoning"),
+        }
 
 
 async def grade_single(
@@ -137,23 +155,17 @@ async def grade_single(
 
     try:
         if is_openai:
-            response_text = await grade_openai(openai_client, prompt, grader_model)
+            response_data = await grade_openai(openai_client, prompt, grader_model)
         else:
-            response_text = await grade_openrouter(semaphore, openrouter_key, prompt, grader_model, provider)
+            response_data = await grade_openrouter(semaphore, openrouter_key, prompt, grader_model, provider)
 
-        scores = parse_grade_response(response_text)
+        scores = parse_grade_response(response_data["content"])
 
-        # Ensure total is calculated
+        # Ensure total is calculated (dynamic - sum all numeric values except 'total')
         if "total" not in scores:
-            score_keys = [
-                "thesis_clarity", "charitable_engagement", "objection_handling",
-                "example_quality", "precision_distinctions", "constructive_contribution",
-                "argumentative_risk", "problem_reframing", "explanatory_unification",
-                "scope_honesty"
-            ]
-            scores["total"] = sum(scores.get(k, 0) for k in score_keys)
+            scores["total"] = sum(v for k, v in scores.items() if isinstance(v, (int, float)) and k != "total")
 
-        return {
+        result = {
             "question_id": entry["question_id"],
             "model": entry.get("model", "human"),
             "prompt_variant": entry.get("prompt_variant", ""),
@@ -163,6 +175,12 @@ async def grade_single(
             "scores": scores,
             "error": None,
         }
+        
+        # Include reasoning if present
+        if response_data.get("reasoning"):
+            result["grader_reasoning"] = response_data["reasoning"]
+        
+        return result
 
     except Exception as e:
         return {
@@ -178,17 +196,31 @@ async def grade_single(
 
 
 def append_to_csv(results: list[dict], csv_path: Path):
-    """Append grading results to the all_results.csv file."""
-    fieldnames = [
-        "question_id", "answer", "model", "prompt_variant", "sample_idx", "is_human",
-        "grader_model", "thesis_clarity", "charitable_engagement", "objection_handling",
-        "example_quality", "precision_distinctions", "constructive_contribution",
-        "argumentative_risk", "problem_reframing", "explanatory_unification",
-        "scope_honesty", "total", "timestamp"
-    ]
+    """Append grading results to the all_results.csv file. Dynamically handles score columns."""
+    # Get score keys from first valid result
+    score_keys = []
+    for r in results:
+        if r.get("scores"):
+            score_keys = [k for k in r["scores"].keys() if k != "total"]
+            break
+
+    # Build fieldnames dynamically
+    base_fields = ["question_id", "answer", "model", "prompt_variant", "sample_idx", "is_human", "grader_model"]
+    fieldnames = base_fields + score_keys + ["total", "timestamp"]
 
     file_exists = csv_path.exists() and csv_path.stat().st_size > 0
     timestamp = datetime.now().isoformat()
+
+    # If file exists, read existing fieldnames to ensure consistency
+    if file_exists:
+        with open(csv_path, "r", newline="") as f:
+            reader = csv.DictReader(f)
+            existing_fields = reader.fieldnames or []
+            # Merge any new score fields
+            for field in fieldnames:
+                if field not in existing_fields:
+                    existing_fields.insert(-1, field)  # Insert before timestamp
+            fieldnames = existing_fields
 
     with open(csv_path, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -211,22 +243,18 @@ def append_to_csv(results: list[dict], csv_path: Path):
                 "timestamp": timestamp,
             }
 
-            # Add score fields
-            for key in [
-                "thesis_clarity", "charitable_engagement", "objection_handling",
-                "example_quality", "precision_distinctions", "constructive_contribution",
-                "argumentative_risk", "problem_reframing", "explanatory_unification",
-                "scope_honesty", "total"
-            ]:
-                row[key] = r["scores"].get(key, "")
+            # Add all score fields dynamically
+            for key, value in r["scores"].items():
+                row[key] = value
 
             writer.writerow(row)
 
 
-async def grade_run(run_name: str, grader_model: str, provider: str | None = None):
+async def grade_run(run_name: str, grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2"):
     """Grade all answers from a run."""
     base_dir = Path(__file__).parent
-    run_dir = base_dir / "data" / "runs" / run_name
+    rubric_version = get_rubric_version(rubric_name)
+    run_dir = base_dir / "data" / rubric_version / "runs" / run_name
     answers_file = run_dir / "answers.jsonl"
 
     if not answers_file.exists():
@@ -243,7 +271,7 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
     print(f"Grader: {grader_model}")
 
     # Setup grader
-    rubric = load_rubric()
+    rubric = load_rubric(rubric_name)
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
     is_openai = grader_model.startswith("openai/")
 
@@ -278,8 +306,8 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
         for r in results:
             f.write(json.dumps(r) + "\n")
 
-    # Append to master CSV
-    csv_path = base_dir / "data" / "all_results.csv"
+    # Append to versioned CSV
+    csv_path = base_dir / "data" / rubric_version / "all_results.csv"
     append_to_csv(results, csv_path)
 
     # Summary
@@ -288,11 +316,12 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
     avg_total = sum(r["scores"]["total"] for r in results if r["scores"]) / max(success, 1)
 
     print(f"\nDone! Grades saved to {grades_file}")
+    print(f"Results appended to {csv_path}")
     print(f"Success: {success}, Errors: {errors}")
     print(f"Average total score: {avg_total:.1f}")
 
 
-async def grade_human_baselines(grader_model: str, provider: str | None = None):
+async def grade_human_baselines(grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2"):
     """Grade the human baseline answers."""
     base_dir = Path(__file__).parent
     questions_file = base_dir / "main_questions.jsonl"
@@ -317,7 +346,7 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None):
     print(f"Grader: {grader_model}")
 
     # Setup grader
-    rubric = load_rubric()
+    rubric = load_rubric(rubric_name)
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
     is_openai = grader_model.startswith("openai/")
 
@@ -348,7 +377,8 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None):
 
     # Save to human_grades folder
     grader_name = grader_model.replace("/", "_")
-    human_grades_dir = base_dir / "data" / "human_grades"
+    rubric_version = get_rubric_version(rubric_name)
+    human_grades_dir = base_dir / "data" / rubric_version / "human_grades"
     human_grades_dir.mkdir(parents=True, exist_ok=True)
 
     grades_file = human_grades_dir / f"{grader_name}.jsonl"
@@ -356,8 +386,8 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None):
         for r in results:
             f.write(json.dumps(r) + "\n")
 
-    # Append to master CSV
-    csv_path = base_dir / "data" / "all_results.csv"
+    # Append to versioned CSV
+    csv_path = base_dir / "data" / rubric_version / "all_results.csv"
     append_to_csv(results, csv_path)
 
     # Summary
@@ -376,13 +406,14 @@ async def main():
     parser.add_argument("--human", action="store_true", help="Grade human baselines instead")
     parser.add_argument("--grader", required=True, help="Grader model (e.g., openai/gpt-4o)")
     parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
+    parser.add_argument("--rubric", default="response_rubric_v2", help="Rubric file name without .md (default: response_rubric_v2)")
 
     args = parser.parse_args()
 
     if args.human:
-        await grade_human_baselines(args.grader, args.provider)
+        await grade_human_baselines(args.grader, args.provider, args.rubric)
     elif args.run:
-        await grade_run(args.run, args.grader, args.provider)
+        await grade_run(args.run, args.grader, args.provider, args.rubric)
     else:
         parser.error("Must specify either --run or --human")
 

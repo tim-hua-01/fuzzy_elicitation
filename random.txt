@@ -1,3 +1,8 @@
+ python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_diverse --questions 7 --samples 5 --run-name glm_q7_v1 --provider parasail/fp8
+
+python grade_responses.py --run glm_q7_v1 --grader openrouter/z-ai/glm-4.7 --provider parasail/fp8
+
+
 ```json
 {
   "question": "Can acting solely from a desire to do what is morally right (de dicto)—that is, from a concern for morality as such rather than from direct concern for the specific considerations that make an action right—suffice to make one's action morally praiseworthy? Critics of the Kantian position have argued that such motivation reflects mere rule-following or even a kind of moral fetishism, where the agent is alienated from the concrete ends at which morality properly aims. How might a defender of the moral worth of acting from duty respond to these charges?",

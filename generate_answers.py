@@ -25,9 +25,20 @@ load_dotenv()
 MAX_CONCURRENT = 10
 
 
-def load_rubric_for_answering() -> str:
+def get_rubric_version(rubric_name: str) -> str:
+    """Extract version from rubric name (e.g., 'response_rubric_v2' -> 'v2')."""
+    if "_v" in rubric_name:
+        return "v" + rubric_name.split("_v")[-1]
+    return "v1"  # default
+
+
+def load_rubric_for_answering(rubric_name: str = "response_rubric_v2") -> str:
     """Load rubric and strip the Output format section."""
-    rubric_path = Path(__file__).parent / "response_rubric.md"
+    rubric_path = Path(__file__).parent / f"{rubric_name}.md"
+    if not rubric_path.exists():
+        # Fallback to original
+        rubric_path = Path(__file__).parent / "response_rubric.md"
+
     with open(rubric_path) as f:
         content = f.read()
 
@@ -238,23 +249,25 @@ async def generate_answers(
     run_name: str | None = None,
     provider: str | None = None,
     question_indices: str | None = None,
+    rubric_name: str = "response_rubric_v2",
 ) -> Path:
     """Generate answers for all questions and save to a run folder."""
     # Setup
     base_dir = Path(__file__).parent
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    rubric_version = get_rubric_version(rubric_name)
 
     if run_name is None:
         model_short = model.split("/")[-1]
         run_name = f"{model_short}_{prompt_name}_{timestamp}"
 
-    run_dir = base_dir / "data" / "runs" / run_name
+    run_dir = base_dir / "data" / rubric_version / "runs" / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # Load data
     all_questions = load_questions()
     template = load_prompt_template(prompt_name)
-    rubric = load_rubric_for_answering()
+    rubric = load_rubric_for_answering(rubric_name)
 
     # Filter questions if indices specified
     if question_indices:
@@ -272,6 +285,7 @@ async def generate_answers(
         "temperature": temperature,
         "provider": provider,
         "question_indices": question_indices,
+        "rubric": rubric_name,
         "timestamp": timestamp,
         "n_questions": len(questions),
     }
@@ -330,6 +344,8 @@ async def main():
     parser.add_argument("--temperature", type=float, default=1.0, help="Sampling temperature")
     parser.add_argument("--run-name", help="Custom run name (default: auto-generated)")
     parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
+    parser.add_argument("--questions", help="Question indices to generate (e.g., '0,2,5' or '0-3' or '0,2-4,7')")
+    parser.add_argument("--rubric", default="response_rubric_v2", help="Rubric file name without .md (default: response_rubric_v2)")
 
     args = parser.parse_args()
 
@@ -340,6 +356,8 @@ async def main():
         temperature=args.temperature,
         run_name=args.run_name,
         provider=args.provider,
+        question_indices=args.questions,
+        rubric_name=args.rubric,
     )
 
 

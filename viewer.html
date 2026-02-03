@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophy Experiment Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            display: flex;
+            height: 100vh;
+            background: #f5f5f5;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .sidebar h2:first-child {
+            margin-top: 0;
+        }
+
+        .rubric-toggle {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .rubric-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            background: #16213e;
+            color: #888;
+            transition: all 0.2s;
+        }
+
+        .rubric-btn.active {
+            background: #0f3460;
+            color: #fff;
+        }
+
+        .rubric-btn:hover {
+            background: #0f3460;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .run-item, .human-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #16213e;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .run-item:hover, .run-item.active,
+        .human-item:hover, .human-item.active {
+            background: #0f3460;
+        }
+
+        .run-item .run-name, .human-item .item-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .run-item .run-meta, .human-item .item-meta {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .human-item {
+            border-left: 3px solid #4caf50;
+        }
+
+        /* Main content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            max-width: 400px;
+        }
+
+        .header .nav-btn {
+            padding: 8px 16px;
+            background: #0f3460;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .header .nav-btn:hover {
+            background: #1a1a2e;
+        }
+
+        .header .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Answer panel */
+        .answer-panel {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .question-box {
+            background: #e8f4f8;
+            border-left: 4px solid #0f3460;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question-box.human {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .question-box h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .question-box p {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .answer-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .answer-box h3 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .answer-box .tag {
+            background: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .answer-box .tag.human {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .answer-content {
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .answer-content p {
+            margin-bottom: 1em;
+        }
+
+        .answer-content h1, .answer-content h2, .answer-content h3 {
+            margin: 1em 0 0.5em 0;
+        }
+
+        /* Reasoning dropdown */
+        .reasoning-toggle {
+            margin-top: 20px;
+        }
+
+        .reasoning-toggle summary {
+            cursor: pointer;
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .reasoning-toggle summary:hover {
+            background: #e5e5e5;
+        }
+
+        .reasoning-content {
+            margin-top: 10px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: 'SF Mono', Monaco, monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Grades panel */
+        .grades-panel {
+            width: 350px;
+            background: white;
+            border-left: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .grades-panel h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .total-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #0f3460;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .total-label {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .score-name {
+            font-size: 13px;
+            color: #555;
+            flex: 1;
+        }
+
+        .score-value {
+            font-weight: 600;
+            font-size: 14px;
+            width: 30px;
+            text-align: center;
+            padding: 3px;
+            border-radius: 4px;
+        }
+
+        .score-5 { background: #c8e6c9; color: #2e7d32; }
+        .score-4 { background: #dcedc8; color: #558b2f; }
+        .score-3 { background: #fff9c4; color: #f9a825; }
+        .score-2 { background: #ffecb3; color: #ff8f00; }
+        .score-1 { background: #ffcdd2; color: #c62828; }
+        .score-0 { background: #ffcdd2; color: #c62828; }
+
+        .grader-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .no-grades {
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .no-runs {
+            color: #666;
+            font-size: 12px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="rubric-toggle">
+            <button class="rubric-btn active" data-version="v1">v1</button>
+            <button class="rubric-btn" data-version="v2">v2</button>
+        </div>
+
+        <h2>Human Baselines</h2>
+        <div id="human-list"></div>
+
+        <h2>Model Runs</h2>
+        <div id="runs-list"></div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <button class="nav-btn" id="prev-btn" disabled>&larr; Prev</button>
+            <select id="answer-select"></select>
+            <button class="nav-btn" id="next-btn" disabled>Next &rarr;</button>
+            <span id="counter" style="margin-left: auto; color: #888; font-size: 14px;"></span>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="answer-panel" id="answer-panel">
+                <div class="empty-state">Select a run or human baseline to view</div>
+            </div>
+
+            <div class="grades-panel" id="grades-panel">
+                <div class="no-grades">No grades loaded</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRubricVersion = 'v1';
+        let currentSource = null;  // { type: 'run'|'human', name: string }
+        let answers = [];
+        let grades = [];
+        let currentIndex = 0;
+
+        // Format score key to display name
+        function formatScoreName(key) {
+            return key
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        async function loadManifest() {
+            try {
+                const response = await fetch(`data/${currentRubricVersion}/manifest.json`);
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (e) {}
+
+            // Auto-detect from directory listing (requires server)
+            try {
+                const runsResponse = await fetch(`data/${currentRubricVersion}/runs/`);
+                const humanResponse = await fetch(`data/${currentRubricVersion}/human_grades/`);
+                // This won't work without directory listing, fall back to known
+            } catch (e) {}
+
+            // Return empty - server will provide
+            return { runs: [], human_grades: [] };
+        }
+
+        async function refreshSidebar() {
+            const runsList = document.getElementById('runs-list');
+            const humanList = document.getElementById('human-list');
+
+            runsList.innerHTML = '<div class="no-runs">Loading...</div>';
+            humanList.innerHTML = '<div class="no-runs">Loading...</div>';
+
+            // Fetch from server which auto-detects
+            try {
+                const response = await fetch(`/api/manifest/${currentRubricVersion}`);
+                const manifest = await response.json();
+
+                // Populate runs
+                if (manifest.runs && manifest.runs.length > 0) {
+                    runsList.innerHTML = '';
+                    for (const run of manifest.runs) {
+                        const div = document.createElement('div');
+                        div.className = 'run-item';
+                        div.dataset.run = run;
+                        div.innerHTML = `<div class="run-name">${run}</div>`;
+                        div.onclick = () => loadRun(run);
+                        runsList.appendChild(div);
+                    }
+                } else {
+                    runsList.innerHTML = '<div class="no-runs">No runs found</div>';
+                }
+
+                // Populate human grades
+                if (manifest.human_grades && manifest.human_grades.length > 0) {
+                    humanList.innerHTML = '';
+                    for (const grader of manifest.human_grades) {
+                        const div = document.createElement('div');
+                        div.className = 'human-item';
+                        div.dataset.grader = grader;
+                        const displayName = grader.replace('.jsonl', '').replace(/_/g, '/');
+                        div.innerHTML = `
+                            <div class="item-name">Human Answers</div>
+                            <div class="item-meta">Graded by: ${displayName}</div>
+                        `;
+                        div.onclick = () => loadHumanGrades(grader);
+                        humanList.appendChild(div);
+                    }
+                } else {
+                    humanList.innerHTML = '<div class="no-runs">No human grades found</div>';
+                }
+            } catch (e) {
+                console.error('Failed to load manifest:', e);
+                runsList.innerHTML = '<div class="no-runs">Error loading runs</div>';
+                humanList.innerHTML = '<div class="no-runs">Error loading human grades</div>';
+            }
+        }
+
+        async function loadRun(runName) {
+            currentSource = { type: 'run', name: runName };
+
+            // Load answers
+            try {
+                const answersResponse = await fetch(`data/${currentRubricVersion}/runs/${runName}/answers.jsonl`);
+                const answersText = await answersResponse.text();
+                answers = answersText.trim().split('\n').filter(l => l).map(line => JSON.parse(line));
+            } catch (e) {
+                answers = [];
+                console.error('Failed to load answers:', e);
+            }
+
+            // Load grades
+            try {
+                const gradesResponse = await fetch(`data/${currentRubricVersion}/runs/${runName}/grades.jsonl`);
+                const gradesText = await gradesResponse.text();
+                grades = gradesText.trim().split('\n').filter(l => l).map(line => JSON.parse(line));
+            } catch (e) {
+                grades = [];
+            }
+
+            updateUI();
+            updateActiveItem();
+        }
+
+        async function loadHumanGrades(graderFile) {
+            currentSource = { type: 'human', name: graderFile };
+
+            // Load human grades file (contains both answers and grades)
+            try {
+                const response = await fetch(`data/${currentRubricVersion}/human_grades/${graderFile}`);
+                const text = await response.text();
+                grades = text.trim().split('\n').filter(l => l).map(line => JSON.parse(line));
+
+                // For human grades, we also need the original questions
+                const questionsResponse = await fetch('main_questions.jsonl');
+                const questionsText = await questionsResponse.text();
+                const questions = questionsText.trim().split('\n').filter(l => l).map(line => JSON.parse(line));
+
+                // Build answers from questions
+                answers = questions.map(q => ({
+                    question_id: q.source_paper.replace('.pdf', ''),
+                    question: q.question,
+                    answer: q.human_answer,
+                    model: 'human',
+                    prompt_variant: '',
+                    sample_idx: 0,
+                    is_human: true
+                }));
+            } catch (e) {
+                answers = [];
+                grades = [];
+                console.error('Failed to load human grades:', e);
+            }
+
+            updateUI();
+            updateActiveItem();
+        }
+
+        function updateActiveItem() {
+            document.querySelectorAll('.run-item, .human-item').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (currentSource) {
+                if (currentSource.type === 'run') {
+                    document.querySelector(`.run-item[data-run="${currentSource.name}"]`)?.classList.add('active');
+                } else {
+                    document.querySelector(`.human-item[data-grader="${currentSource.name}"]`)?.classList.add('active');
+                }
+            }
+        }
+
+        function updateUI() {
+            const select = document.getElementById('answer-select');
+            select.innerHTML = '';
+
+            answers.forEach((answer, idx) => {
+                const option = document.createElement('option');
+                option.value = idx;
+                const label = answer.is_human
+                    ? `${answer.question_id} (human)`
+                    : `${answer.question_id} (sample ${answer.sample_idx})`;
+                option.textContent = label;
+                select.appendChild(option);
+            });
+
+            document.getElementById('prev-btn').disabled = answers.length === 0;
+            document.getElementById('next-btn').disabled = answers.length === 0;
+
+            currentIndex = 0;
+            renderCurrentAnswer();
+        }
+
+        function renderCurrentAnswer() {
+            const panel = document.getElementById('answer-panel');
+            const gradesPanel = document.getElementById('grades-panel');
+
+            if (answers.length === 0) {
+                panel.innerHTML = '<div class="empty-state">No answers loaded</div>';
+                gradesPanel.innerHTML = '<div class="no-grades">No grades available</div>';
+                return;
+            }
+
+            const answer = answers[currentIndex];
+            const grade = grades.find(g =>
+                g.question_id === answer.question_id &&
+                (answer.is_human || g.sample_idx === answer.sample_idx)
+            );
+
+            // Update counter
+            document.getElementById('counter').textContent = `${currentIndex + 1} / ${answers.length}`;
+            document.getElementById('answer-select').value = currentIndex;
+
+            // Update nav buttons
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            document.getElementById('next-btn').disabled = currentIndex === answers.length - 1;
+
+            // Render answer
+            const isHuman = answer.is_human || answer.model === 'human';
+            let answerHtml = `
+                <div class="question-box ${isHuman ? 'human' : ''}">
+                    <h3>Question (${answer.question_id})</h3>
+                    <p>${answer.question}</p>
+                </div>
+
+                <div class="answer-box">
+                    <h3>
+                        Answer
+                        <span class="tag ${isHuman ? 'human' : ''}">${isHuman ? 'Human' : answer.model}</span>
+                        ${!isHuman && answer.prompt_variant ? `<span class="tag">${answer.prompt_variant}</span>` : ''}
+                    </h3>
+                    <div class="answer-content">${marked.parse(answer.answer || '')}</div>
+            `;
+
+            if (answer.reasoning) {
+                answerHtml += `
+                    <details class="reasoning-toggle">
+                        <summary>Model Reasoning (${answer.reasoning.length.toLocaleString()} chars)</summary>
+                        <div class="reasoning-content">${escapeHtml(answer.reasoning)}</div>
+                    </details>
+                `;
+            }
+
+            answerHtml += '</div>';
+            panel.innerHTML = answerHtml;
+
+            // Render grades - dynamically based on scores object
+            if (grade && grade.scores) {
+                const scores = grade.scores;
+                const total = scores.total || Object.values(scores).reduce((a, b) => typeof b === 'number' ? a + b : a, 0);
+                const maxScore = (Object.keys(scores).length - 1) * 5;  // -1 for 'total' key
+
+                let gradesHtml = `
+                    <h3>Grades</h3>
+                    <div class="total-score">${total}</div>
+                    <div class="total-label">/ ${maxScore} total</div>
+                `;
+
+                // Dynamically render all score keys except 'total'
+                for (const [key, value] of Object.entries(scores)) {
+                    if (key === 'total') continue;
+                    const score = value || 0;
+                    gradesHtml += `
+                        <div class="score-item">
+                            <span class="score-name">${formatScoreName(key)}</span>
+                            <span class="score-value score-${score}">${score}</span>
+                        </div>
+                    `;
+                }
+
+                gradesHtml += `
+                    <div class="grader-info">
+                        Graded by: ${grade.grader_model}
+                    </div>
+                `;
+
+                if (grade.grader_reasoning) {
+                    gradesHtml += `
+                        <details class="reasoning-toggle" style="margin-top: 15px;">
+                            <summary>Grader Reasoning</summary>
+                            <div class="reasoning-content">${escapeHtml(grade.grader_reasoning)}</div>
+                        </details>
+                    `;
+                }
+
+                gradesPanel.innerHTML = gradesHtml;
+            } else {
+                gradesPanel.innerHTML = '<div class="no-grades">No grades for this answer</div>';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        async function init() {
+            // Rubric version toggle
+            document.querySelectorAll('.rubric-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.rubric-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentRubricVersion = btn.dataset.version;
+                    currentSource = null;
+                    answers = [];
+                    grades = [];
+                    document.getElementById('answer-panel').innerHTML = '<div class="empty-state">Select a run or human baseline to view</div>';
+                    document.getElementById('grades-panel').innerHTML = '<div class="no-grades">No grades loaded</div>';
+                    refreshSidebar();
+                };
+            });
+
+            // Navigation
+            document.getElementById('prev-btn').onclick = () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderCurrentAnswer();
+                }
+            };
+
+            document.getElementById('next-btn').onclick = () => {
+                if (currentIndex < answers.length - 1) {
+                    currentIndex++;
+                    renderCurrentAnswer();
+                }
+            };
+
+            document.getElementById('answer-select').onchange = (e) => {
+                currentIndex = parseInt(e.target.value);
+                renderCurrentAnswer();
+            };
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    document.getElementById('prev-btn').click();
+                } else if (e.key === 'ArrowRight') {
+                    document.getElementById('next-btn').click();
+                }
+            });
+
+            await refreshSidebar();
+        }
+
+        init();
+    </script>
+</body>
+</html>
