@@ -158,3 +158,8 @@ Columns: `question_id, answer, model, prompt_variant, sample_idx, is_human, grad
 - OpenRouter uses async gather (no native multi-sample support)
 - Human baseline grades are stored separately to avoid re-grading per experiment
 - All results accumulate in `all_results.csv` for easy analysis
+
+
+https://huggingface.co/allenai/Olmo-3.1-32B-Think
+https://huggingface.co/allenai/Olmo-3-32B-Think
+https://huggingface.co/allenai/Olmo-3-32B-Think-DPO

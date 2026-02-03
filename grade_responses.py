@@ -21,6 +21,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from tqdm.asyncio import tqdm_asyncio
 
 load_dotenv()
 
@@ -88,6 +89,7 @@ async def grade_openrouter(
     api_key: str,
     prompt: str,
     model: str,
+    provider: str | None = None,
 ) -> str:
     """Grade using OpenRouter API."""
     model_name = model.replace("openrouter/", "")
@@ -101,8 +103,11 @@ async def grade_openrouter(
         payload = {
             "model": model_name,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 1,  # Deterministic grading
+            "temperature": 1,
         }
+
+        if provider:
+            payload["provider"] = {"order": [provider]}
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             response = await client.post(
@@ -123,6 +128,7 @@ async def grade_single(
     openai_client: AsyncOpenAI | None,
     openrouter_key: str | None,
     semaphore: asyncio.Semaphore,
+    provider: str | None = None,
 ) -> dict:
     """Grade a single answer entry."""
     prompt = build_grading_prompt(entry["question"], entry["answer"], rubric)
@@ -133,7 +139,7 @@ async def grade_single(
         if is_openai:
             response_text = await grade_openai(openai_client, prompt, grader_model)
         else:
-            response_text = await grade_openrouter(semaphore, openrouter_key, prompt, grader_model)
+            response_text = await grade_openrouter(semaphore, openrouter_key, prompt, grader_model, provider)
 
         scores = parse_grade_response(response_text)
 
@@ -217,7 +223,7 @@ def append_to_csv(results: list[dict], csv_path: Path):
             writer.writerow(row)
 
 
-async def grade_run(run_name: str, grader_model: str):
+async def grade_run(run_name: str, grader_model: str, provider: str | None = None):
     """Grade all answers from a run."""
     base_dir = Path(__file__).parent
     run_dir = base_dir / "data" / "runs" / run_name
@@ -256,11 +262,11 @@ async def grade_run(run_name: str, grader_model: str):
 
     # Grade all entries concurrently
     tasks = [
-        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore)
+        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore, provider)
         for entry in entries
     ]
 
-    results = await asyncio.gather(*tasks)
+    results = await tqdm_asyncio.gather(*tasks, desc="Grading", unit="ans")
 
     # Add answers to results for CSV
     for r, entry in zip(results, entries):
@@ -286,7 +292,7 @@ async def grade_run(run_name: str, grader_model: str):
     print(f"Average total score: {avg_total:.1f}")
 
 
-async def grade_human_baselines(grader_model: str):
+async def grade_human_baselines(grader_model: str, provider: str | None = None):
     """Grade the human baseline answers."""
     base_dir = Path(__file__).parent
     questions_file = base_dir / "main_questions.jsonl"
@@ -330,11 +336,11 @@ async def grade_human_baselines(grader_model: str):
 
     # Grade all entries concurrently
     tasks = [
-        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore)
+        grade_single(entry, grader_model, rubric, openai_client, openrouter_key, semaphore, provider)
         for entry in entries
     ]
 
-    results = await asyncio.gather(*tasks)
+    results = await tqdm_asyncio.gather(*tasks, desc="Grading humans", unit="ans")
 
     # Add answers to results for CSV
     for r, entry in zip(results, entries):
@@ -369,13 +375,14 @@ async def main():
     parser.add_argument("--run", help="Run name to grade (from data/runs/)")
     parser.add_argument("--human", action="store_true", help="Grade human baselines instead")
     parser.add_argument("--grader", required=True, help="Grader model (e.g., openai/gpt-4o)")
+    parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
 
     args = parser.parse_args()
 
     if args.human:
-        await grade_human_baselines(args.grader)
+        await grade_human_baselines(args.grader, args.provider)
     elif args.run:
-        await grade_run(args.run, args.grader)
+        await grade_run(args.run, args.grader, args.provider)
     else:
         parser.error("Must specify either --run or --human")
 

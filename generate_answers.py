@@ -18,6 +18,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from tqdm.asyncio import tqdm_asyncio
 
 load_dotenv()
 
@@ -62,22 +63,24 @@ def load_questions() -> list[dict]:
 
 
 async def generate_openai(
+    semaphore: asyncio.Semaphore,
     client: AsyncOpenAI,
     prompt: str,
     model: str,
     n_samples: int,
     temperature: float,
-) -> list[str]:
+) -> list[dict[str, str | None]]:
     """Generate responses using OpenAI API with native n parameter."""
     # Strip "openai/" prefix
     model_name = model.replace("openai/", "")
 
-    response = await client.responses.create(
-        model=model_name,
-        input=[{"role": "user", "content": prompt}],
-        n=n_samples,
-        temperature=temperature,
-    )
+    async with semaphore:
+        response = await client.responses.create(
+            model=model_name,
+            input=[{"role": "user", "content": prompt}],
+            n=n_samples,
+            temperature=temperature,
+        )
 
     # Extract all outputs
     outputs = []
@@ -86,11 +89,17 @@ async def generate_openai(
             if hasattr(item, 'content'):
                 for content_block in item.content:
                     if hasattr(content_block, 'text'):
-                        outputs.append(content_block.text)
+                        outputs.append({
+                            "content": content_block.text,
+                            "reasoning": None,  # OpenAI API doesn't expose reasoning tokens
+                        })
 
     # Fallback to output_text for single response
     if not outputs and hasattr(response, 'output_text'):
-        outputs = [response.output_text]
+        outputs = [{
+            "content": response.output_text,
+            "reasoning": None,
+        }]
 
     return outputs
 
@@ -101,7 +110,8 @@ async def generate_openrouter_single(
     prompt: str,
     model: str,
     temperature: float,
-) -> str:
+    provider: str | None = None,
+) -> dict[str, str | None]:
     """Generate a single response using OpenRouter API."""
     # Strip "openrouter/" prefix
     model_name = model.replace("openrouter/", "")
@@ -118,34 +128,106 @@ async def generate_openrouter_single(
             "temperature": temperature,
         }
 
+        if provider:
+            payload["provider"] = {"order": [provider]}
+
         async with httpx.AsyncClient(timeout=120.0) as client:
             response = await client.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers=headers,
                 json=payload,
             )
+            if response.status_code != 200:
+                print(f"Error {response.status_code}: {response.text}")
             response.raise_for_status()
             data = response.json()
 
-        return data["choices"][0]["message"]["content"]
+        message = data["choices"][0]["message"]
+        return {
+            "content": message["content"],
+            "reasoning": message.get("reasoning"),
+        }
 
 
 async def generate_openrouter(
+    semaphore: asyncio.Semaphore,
     api_key: str,
     prompt: str,
     model: str,
     n_samples: int,
     temperature: float,
-) -> list[str]:
+    provider: str | None = None,
+) -> list[dict[str, str | None]]:
     """Generate multiple responses using OpenRouter API via async gather."""
-    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
-
     tasks = [
-        generate_openrouter_single(semaphore, api_key, prompt, model, temperature)
+        generate_openrouter_single(semaphore, api_key, prompt, model, temperature, provider)
         for _ in range(n_samples)
     ]
 
     return await asyncio.gather(*tasks)
+
+
+async def generate_single_question(
+    semaphore: asyncio.Semaphore,
+    question: dict,
+    template: str,
+    rubric: str,
+    model: str,
+    prompt_name: str,
+    n_samples: int,
+    temperature: float,
+    is_openai: bool,
+    client: AsyncOpenAI | None,
+    api_key: str | None,
+    provider: str | None,
+) -> list[dict]:
+    """Generate answers for a single question."""
+    question_id = Path(question["source_paper"]).stem
+    question_text = question["question"]
+    prompt = format_prompt(template, question_text, rubric)
+
+    if is_openai:
+        responses = await generate_openai(
+            semaphore, client, prompt, model, n_samples, temperature
+        )
+    else:
+        responses = await generate_openrouter(
+            semaphore, api_key, prompt, model, n_samples, temperature, provider
+        )
+
+    entries = []
+    for sample_idx, response_data in enumerate(responses):
+        entry = {
+            "question_id": question_id,
+            "question": question_text,
+            "answer": response_data["content"],
+            "model": model,
+            "prompt_variant": prompt_name,
+            "sample_idx": sample_idx,
+            "is_human": False,
+        }
+        
+        # Include reasoning if present
+        if response_data.get("reasoning"):
+            entry["reasoning"] = response_data["reasoning"]
+        
+        entries.append(entry)
+    
+    return entries
+
+
+def parse_question_indices(indices_str: str, total: int) -> list[int]:
+    """Parse question indices from string like '0,2,5' or '0-3' or '0,2-4,7'."""
+    indices = set()
+    for part in indices_str.split(","):
+        part = part.strip()
+        if "-" in part:
+            start, end = part.split("-")
+            indices.update(range(int(start), int(end) + 1))
+        else:
+            indices.add(int(part))
+    # Filter to valid range and sort
+    return sorted(i for i in indices if 0 <= i < total)
 
 
 async def generate_answers(
@@ -154,6 +236,8 @@ async def generate_answers(
     n_samples: int,
     temperature: float,
     run_name: str | None = None,
+    provider: str | None = None,
+    question_indices: str | None = None,
 ) -> Path:
     """Generate answers for all questions and save to a run folder."""
     # Setup
@@ -168,9 +252,17 @@ async def generate_answers(
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # Load data
-    questions = load_questions()
+    all_questions = load_questions()
     template = load_prompt_template(prompt_name)
     rubric = load_rubric_for_answering()
+
+    # Filter questions if indices specified
+    if question_indices:
+        indices = parse_question_indices(question_indices, len(all_questions))
+        questions = [all_questions[i] for i in indices]
+        print(f"Selected {len(questions)}/{len(all_questions)} questions: {indices}")
+    else:
+        questions = all_questions
 
     # Save config
     config = {
@@ -178,19 +270,23 @@ async def generate_answers(
         "prompt_variant": prompt_name,
         "n_samples": n_samples,
         "temperature": temperature,
+        "provider": provider,
+        "question_indices": question_indices,
         "timestamp": timestamp,
         "n_questions": len(questions),
     }
     with open(run_dir / "config.json", "w") as f:
         json.dump(config, f, indent=2)
 
-    print(f"Generating answers for {len(questions)} questions x {n_samples} samples")
     print(f"Model: {model}")
     print(f"Prompt: {prompt_name}")
     print(f"Output: {run_dir}")
 
     # Determine provider
     is_openai = model.startswith("openai/")
+
+    client = None
+    api_key = None
 
     if is_openai:
         api_key = os.environ.get("OPENAI_API_KEY")
@@ -202,40 +298,25 @@ async def generate_answers(
         if not api_key:
             raise ValueError("OPENROUTER_API_KEY not set")
 
-    # Generate answers
+    # Generate answers for all questions concurrently
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+    
+    tasks = [
+        generate_single_question(
+            semaphore, q, template, rubric, model, prompt_name,
+            n_samples, temperature, is_openai, client, api_key, provider
+        )
+        for q in questions
+    ]
+
+    results = await tqdm_asyncio.gather(*tasks, desc="Generating", unit="q")
+
+    # Flatten results and write to file
     answers_file = run_dir / "answers.jsonl"
-
     with open(answers_file, "w") as f:
-        for q_idx, q in enumerate(questions):
-            question_id = Path(q["source_paper"]).stem
-            question_text = q["question"]
-
-            prompt = format_prompt(template, question_text, rubric)
-
-            print(f"[{q_idx + 1}/{len(questions)}] {question_id}...")
-
-            if is_openai:
-                responses = await generate_openai(
-                    client, prompt, model, n_samples, temperature
-                )
-            else:
-                responses = await generate_openrouter(
-                    api_key, prompt, model, n_samples, temperature
-                )
-
-            for sample_idx, answer in enumerate(responses):
-                entry = {
-                    "question_id": question_id,
-                    "question": question_text,
-                    "answer": answer,
-                    "model": model,
-                    "prompt_variant": prompt_name,
-                    "sample_idx": sample_idx,
-                    "is_human": False,
-                }
+        for entries in results:
+            for entry in entries:
                 f.write(json.dumps(entry) + "\n")
-
-            print(f"  Generated {len(responses)} samples")
 
     print(f"\nDone! Answers saved to {answers_file}")
     return run_dir
@@ -248,6 +329,7 @@ async def main():
     parser.add_argument("--samples", type=int, default=1, help="Number of samples per question")
     parser.add_argument("--temperature", type=float, default=1.0, help="Sampling temperature")
     parser.add_argument("--run-name", help="Custom run name (default: auto-generated)")
+    parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
 
     args = parser.parse_args()
 
@@ -257,6 +339,7 @@ async def main():
         n_samples=args.samples,
         temperature=args.temperature,
         run_name=args.run_name,
+        provider=args.provider,
     )
 
 
