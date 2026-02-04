@@ -46,6 +46,19 @@ df %<>% mutate(normaizled_score = (total - mean(total))/sd(total),
                                               sd(reasoning_char_count),
                normalized_answer_char = (answer_char_count - mean(answer_char_count))/
                                               sd(answer_char_count))
+claude_grades <- read_csv("data/v2/all_results_anthropic_claude-sonnet-4-5.csv") %>%
+  mutate(prompt_variant = ifelse(!is.na(prompt_variant), prompt_variant, "human")) %>% filter(!is.na(answer))
+
+claude_grades %<>% mutate(claude_total = total, claude_normalized = (total - mean(total))/sd(total),
+                          normalized_reasoning_char = (reasoning_char_count - mean(reasoning_char_count))/
+                            sd(reasoning_char_count),
+                          normalized_answer_char = (answer_char_count - mean(answer_char_count))/
+                            sd(answer_char_count))
+
+claude_grades%>% select(total) %>% skim()
+
+df %<>% left_join(claude_grades %>% select(claude_total, claude_normalized, question_id, sample_idx,prompt_variant))
+
 
 df %>% skim()
 
@@ -56,7 +69,15 @@ df %>% group_by(prompt_variant, question_id) %>% summarize(best_of_n = max(total
   group_by(prompt_variant) %>% skim()
 
 
+feols(total ~ as.factor(prompt_variant)+ 
+        normalized_answer_char + normalized_reasoning_char, data = df, vcov = ~question_id)
 feols(total ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
+feols(claude_total ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
+
+feols(claude_normalized ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
+
+feols(claude_total ~ as.factor(prompt_variant)+ 
+        normalized_answer_char + normalized_reasoning_char, data = df, vcov = ~question_id)
 
 model <- feols(normaizled_score ~ as.factor(prompt_variant), data = df, vcov = ~question_id)
 
@@ -131,6 +152,52 @@ standard deviations on philosophy questions",
        caption = "Ten philosophy questions sampled 30 times each. Standard errors clustered at the question level
 Controlling for response and reasoning lengths.") +
   myTheme#
+
+# Bar chart comparing total vs claude_total across prompt variants (no intercept)
+model_total <- feols(total ~ as.factor(prompt_variant) - 1, data = df, vcov = ~question_id)
+model_claude <- feols(claude_total ~ as.factor(prompt_variant) - 1, data = df, vcov = ~question_id)
+
+# Extract coefficients
+coefs_total <- tidy(model_total, conf.int = TRUE)
+coefs_claude <- tidy(model_claude, conf.int = TRUE)
+
+# Create combined data frame with both grader types
+combined_data <- bind_rows(
+  coefs_total %>%
+    mutate(prompt_variant = str_replace(term, "as.factor\\(prompt_variant\\)", "")) %>%
+    select(prompt_variant, estimate, std_error = std.error) %>%
+    mutate(grader = "Self Grade"),
+  coefs_claude %>%
+    mutate(prompt_variant = str_replace(term, "as.factor\\(prompt_variant\\)", "")) %>%
+    select(prompt_variant, estimate, std_error = std.error) %>%
+    mutate(grader = "Claude Grade")
+)
+
+# Create side-by-side bar chart
+combined_data %>%
+  mutate(prompt_variant = case_when(
+    prompt_variant == 'answer_with_rubric_2k' ~ "With Rubric",
+    prompt_variant == 'answer_without_rubric_2k' ~ "No Rubric",
+    prompt_variant == 'rubric_v2_tryhard' ~ "With Rubric & Try Hard",
+    TRUE ~ "No Rubric & Try Hard"
+  )) %>%
+  ggplot(aes(x = prompt_variant, y = estimate, fill = grader)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  geom_errorbar(aes(ymin = estimate - 1.96 * std_error, 
+                    ymax = estimate + 1.96 * std_error),
+                position = position_dodge(width = 0.8),
+                width = 0.3, linewidth = 0.5) +
+  coord_cartesian(ylim = c(28,36)) + 
+  scale_fill_manual(values = c("#D4A574","grey40")) +
+  labs(title = "Claude graded scores follow a similar pattern—trying hard prompt yields higher scores
+compared to rubric only by 0.37 standard deviations",
+       subtitle = "95% confidence intervals shown. Standard errors clustered at question level.",
+       x = "Prompt Variant",
+       y = "Raw Rubric Score out of 48",
+       fill = "Grader Type") +
+  myTheme
+
+
 
 feols(normaizled_score ~ as.factor(prompt_variant) + 
         normalized_answer_char + normalized_reasoning_char, data = df, vcov = ~question_id)
