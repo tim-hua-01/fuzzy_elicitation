@@ -350,11 +350,22 @@ def append_to_csv(results: list[dict], csv_path: Path):
                 "reasoning_char_count": reasoning_char_count,
             }
 
-            # Add all score fields dynamically
+            # Add all score fields dynamically with field name mapping
             for key, value in r["scores"].items():
+                # Map known field name variations
+                if key == "precision_in_distinctions":
+                    key = "precision_distinctions"
                 row[key] = value
 
-            writer.writerow(row)
+            # Filter out any keys not in fieldnames to prevent crash
+            filtered_row = {k: v for k, v in row.items() if k in fieldnames}
+            
+            # Warn if we had to filter fields
+            filtered_keys = set(row.keys()) - set(filtered_row.keys())
+            if filtered_keys:
+                print(f"Warning: Skipping unexpected fields for question {r['question_id']}: {filtered_keys}")
+            
+            writer.writerow(filtered_row)
 
 
 async def grade_run(
