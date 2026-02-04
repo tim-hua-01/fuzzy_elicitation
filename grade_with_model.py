@@ -289,8 +289,33 @@ def sanitize_model_name(model: str) -> str:
     return model.replace("/", "_").replace(":", "_")
 
 
-def append_to_csv(results: list[dict], csv_path: Path):
+def get_existing_csv_rows(csv_path: Path) -> set[tuple]:
+    """Get set of existing row identifiers from CSV."""
+    if not csv_path.exists():
+        return set()
+    
+    existing = set()
+    with open(csv_path, "r", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Create identifier tuple
+            identifier = (
+                row.get("question_id", ""),
+                row.get("model", ""),
+                row.get("prompt_variant", ""),
+                row.get("sample_idx", ""),
+                row.get("grader_model", "")
+            )
+            existing.add(identifier)
+    
+    return existing
+
+
+def append_to_csv(results: list[dict], csv_path: Path, skip_duplicates: bool = False):
     """Append grading results to a CSV file with character counts."""
+    # Get existing rows if skip_duplicates is enabled
+    existing_rows = get_existing_csv_rows(csv_path) if skip_duplicates else set()
+    
     # Get score keys from first valid result
     score_keys = []
     for r in results:
@@ -321,6 +346,9 @@ def append_to_csv(results: list[dict], csv_path: Path):
                         existing_fields.insert(idx, field)
             fieldnames = existing_fields
 
+    added_count = 0
+    skipped_count = 0
+    
     with open(csv_path, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
 
@@ -329,6 +357,19 @@ def append_to_csv(results: list[dict], csv_path: Path):
 
         for r in results:
             if r["scores"] is None:
+                continue
+
+            # Check for duplicate
+            identifier = (
+                r["question_id"],
+                r["model"],
+                r["prompt_variant"],
+                str(r["sample_idx"]),
+                r["grader_model"]
+            )
+            
+            if skip_duplicates and identifier in existing_rows:
+                skipped_count += 1
                 continue
 
             # Calculate character counts
@@ -366,6 +407,10 @@ def append_to_csv(results: list[dict], csv_path: Path):
                 print(f"Warning: Skipping unexpected fields for question {r['question_id']}: {filtered_keys}")
             
             writer.writerow(filtered_row)
+            added_count += 1
+    
+    if skip_duplicates:
+        print(f"Added {added_count} new rows, skipped {skipped_count} duplicates")
 
 
 async def grade_run(
@@ -374,12 +419,15 @@ async def grade_run(
     provider: str | None = None,
     rubric_name: str = "response_rubric_v2",
     reasoning_budget: int | None = None,
+    skip_grading: bool = False,
 ):
-    """Grade all answers from a run."""
+    """Grade all answers from a run or load existing grades."""
     base_dir = Path(__file__).parent
     rubric_version = get_rubric_version(rubric_name)
     run_dir = base_dir / "data" / rubric_version / "runs" / run_name
     answers_file = run_dir / "answers.jsonl"
+    safe_model_name = sanitize_model_name(grader_model)
+    grades_file = run_dir / f"grades_{safe_model_name}.jsonl"
 
     if not answers_file.exists():
         raise FileNotFoundError(f"Answers file not found: {answers_file}")
@@ -393,93 +441,108 @@ async def grade_run(
 
     # Nice config printout
     print("\n" + "=" * 50)
-    print("GRADE ANSWERS WITH MODEL")
+    print("GRADE ANSWERS WITH MODEL" if not skip_grading else "LOAD EXISTING GRADES TO CSV")
     print("=" * 50)
     print(f"  Run:              {run_name}")
     print(f"  Grader:           {grader_model}")
-    print(f"  Provider:         {provider or '(default)'}")
-    print(f"  Rubric:           {rubric_name}")
-    print(f"  Reasoning budget: {reasoning_budget or '(disabled)'}")
+    if not skip_grading:
+        print(f"  Provider:         {provider or '(default)'}")
+        print(f"  Rubric:           {rubric_name}")
+        print(f"  Reasoning budget: {reasoning_budget or '(disabled)'}")
     print(f"  Answers:          {len(entries)}")
     print("=" * 50 + "\n")
 
-    # Setup grader
-    rubric = load_rubric(rubric_name)
-    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
-    is_anthropic = grader_model.startswith("anthropic/")
-    is_openai = grader_model.startswith("openai/")
-
-    anthropic_client = None
-    openai_client = None
-    http_client = None
-    openrouter_key = None
-
-    if is_anthropic:
-        api_key = os.environ.get("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise ValueError("ANTHROPIC_API_KEY not set")
-        anthropic_client = AsyncAnthropic(api_key=api_key)
-    elif is_openai:
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY not set")
-        openai_client = AsyncOpenAI(api_key=api_key)
+    if skip_grading:
+        # Load existing grades from JSONL
+        if not grades_file.exists():
+            raise FileNotFoundError(f"Grades file not found: {grades_file}. Cannot skip grading.")
+        
+        print(f"Loading existing grades from {grades_file}...")
+        results = []
+        with open(grades_file) as f:
+            for line in f:
+                if line.strip():
+                    results.append(json.loads(line))
+        
+        print(f"Loaded {len(results)} grades")
+        
     else:
-        openrouter_key = os.environ.get("OPENROUTER_API_KEY")
-        if not openrouter_key:
-            raise ValueError("OPENROUTER_API_KEY not set")
-        http_client = httpx.AsyncClient(timeout=240.0)
+        # Setup grader
+        rubric = load_rubric(rubric_name)
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+        is_anthropic = grader_model.startswith("anthropic/")
+        is_openai = grader_model.startswith("openai/")
 
-    try:
-        # Grade all entries concurrently
-        tasks = [
-            grade_single(
-                entry,
-                grader_model,
-                rubric,
-                anthropic_client,
-                openai_client,
-                http_client,
-                openrouter_key,
-                semaphore,
-                provider,
-                reasoning_budget,
-            )
-            for entry in entries
-        ]
+        anthropic_client = None
+        openai_client = None
+        http_client = None
+        openrouter_key = None
 
-        results = await tqdm_asyncio.gather(*tasks, desc="Grading", unit="ans")
-    finally:
-        # Properly close all async clients
-        if anthropic_client:
-            await anthropic_client.close()
-        if openai_client:
-            await openai_client.close()
-        if http_client:
-            await http_client.aclose()
+        if is_anthropic:
+            api_key = os.environ.get("ANTHROPIC_API_KEY")
+            if not api_key:
+                raise ValueError("ANTHROPIC_API_KEY not set")
+            anthropic_client = AsyncAnthropic(api_key=api_key)
+        elif is_openai:
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY not set")
+            openai_client = AsyncOpenAI(api_key=api_key)
+        else:
+            openrouter_key = os.environ.get("OPENROUTER_API_KEY")
+            if not openrouter_key:
+                raise ValueError("OPENROUTER_API_KEY not set")
+            http_client = httpx.AsyncClient(timeout=240.0)
 
-    # Add answers and reasoning to results for CSV
-    for r, entry in zip(results, entries):
-        r["answer"] = entry["answer"]
-        r["reasoning"] = entry.get("reasoning", "")
+        try:
+            # Grade all entries concurrently
+            tasks = [
+                grade_single(
+                    entry,
+                    grader_model,
+                    rubric,
+                    anthropic_client,
+                    openai_client,
+                    http_client,
+                    openrouter_key,
+                    semaphore,
+                    provider,
+                    reasoning_budget,
+                )
+                for entry in entries
+            ]
 
-    # Save grades to run folder with model name suffix
-    safe_model_name = sanitize_model_name(grader_model)
-    grades_file = run_dir / f"grades_{safe_model_name}.jsonl"
-    with open(grades_file, "w") as f:
-        for r in results:
-            f.write(json.dumps(r) + "\n")
+            results = await tqdm_asyncio.gather(*tasks, desc="Grading", unit="ans")
+        finally:
+            # Properly close all async clients
+            if anthropic_client:
+                await anthropic_client.close()
+            if openai_client:
+                await openai_client.close()
+            if http_client:
+                await http_client.aclose()
+
+        # Add answers and reasoning to results for CSV
+        for r, entry in zip(results, entries):
+            r["answer"] = entry["answer"]
+            r["reasoning"] = entry.get("reasoning", "")
+
+        # Save grades to run folder with model name suffix
+        with open(grades_file, "w") as f:
+            for r in results:
+                f.write(json.dumps(r) + "\n")
 
     # Save CSV to version folder (e.g., data/v2/)
     csv_path = base_dir / "data" / rubric_version / f"all_results_{safe_model_name}.csv"
-    append_to_csv(results, csv_path)
+    append_to_csv(results, csv_path, skip_duplicates=skip_grading)
 
     # Summary
     success = sum(1 for r in results if r["scores"] is not None)
     errors = sum(1 for r in results if r["error"] is not None)
     avg_total = sum(r["scores"]["total"] for r in results if r["scores"]) / max(success, 1)
 
-    print(f"\nDone! Grades saved to {grades_file}")
+    if not skip_grading:
+        print(f"\nDone! Grades saved to {grades_file}")
     print(f"CSV saved to {csv_path}")
     print(f"Success: {success}, Errors: {errors}")
     print(f"Average total score: {avg_total:.1f}")
@@ -616,20 +679,24 @@ async def main():
     parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
     parser.add_argument("--rubric", default="response_rubric_v2", help="Rubric file name without .md (default: response_rubric_v2)")
     parser.add_argument("--reasoning-budget", type=int, help="Anthropic extended thinking budget in tokens (default: 1500 for Anthropic models, e.g., 10000)")
+    parser.add_argument("--skip-grading", action="store_true", help="Skip grading and load existing grades from JSONL to append to CSV (deduplicates)")
 
     args = parser.parse_args()
+
+    if args.skip_grading and args.human:
+        parser.error("--skip-grading cannot be used with --human")
 
     if args.reasoning_budget and not args.grader.startswith("anthropic/"):
         parser.error("--reasoning-budget can only be used with Anthropic models (grader must start with 'anthropic/')")
 
     # Set default reasoning budget for Anthropic models if not specified
-    if args.grader.startswith("anthropic/") and args.reasoning_budget is None:
+    if args.grader.startswith("anthropic/") and args.reasoning_budget is None and not args.skip_grading:
         args.reasoning_budget = 1500
 
     if args.human:
         await grade_human_baselines(args.grader, args.provider, args.rubric, args.reasoning_budget)
     elif args.run:
-        await grade_run(args.run, args.grader, args.provider, args.rubric, args.reasoning_budget)
+        await grade_run(args.run, args.grader, args.provider, args.rubric, args.reasoning_budget, args.skip_grading)
     else:
         parser.error("Must specify either --run or --human")
 
