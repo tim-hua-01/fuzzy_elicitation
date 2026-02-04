@@ -40,7 +40,10 @@ python grade_with_model.py --run rubric_v2_tryhard_25more --grader anthropic/cla
 python grade_with_model.py --run v2_tryhard_norubric --grader anthropic/claude-sonnet-4-5
 
 
-
+python generate_answers.py --model openai/o3 --prompt answer_without_rubric_2k --samples 15 --data-version v2_o3 --grade --grader openai/o3 --run-name norubric && \
+python generate_answers.py --model openai/o3 --prompt answer_with_rubric_2k --samples 15 --data-version v2_o3 --grade --grader openai/o3 --run-name rubric && \
+python generate_answers.py --model openai/o3 --prompt rubric_v2_tryhard --samples 15 --data-version v2_o3 --grade --grader openai/o3 --run-name rubric_tryhard && \
+python generate_answers.py --model openai/o3 --prompt v2_tryhard_norubric --samples 15 --data-version v2_o3 --grade --grader openai/o3 --run-name norubric_tryhard
 
 ```json
 {

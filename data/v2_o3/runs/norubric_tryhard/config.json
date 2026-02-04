@@ -1,0 +1,13 @@
+{
+  "model": "openai/o3",
+  "prompt_variant": "v2_tryhard_norubric",
+  "n_samples": 15,
+  "temperature": 1.0,
+  "provider": null,
+  "question_indices": null,
+  "rubric": "response_rubric_v2",
+  "data_version": "v2_o3",
+  "timestamp": "20260204_020809",
+  "n_questions": 10,
+  "sample_start": 0
+}
