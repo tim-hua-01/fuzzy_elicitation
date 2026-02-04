@@ -100,6 +100,8 @@ def process_run(run_dir: Path, errors: List[str]) -> List[Dict]:
             'timestamp': grade.get('timestamp', ''),
             'answer_char_count': answer_char_count,
             'reasoning_char_count': reasoning_char_count,
+            'output_tokens': answer.get('output_tokens', ''),
+            'reasoning_tokens': answer.get('reasoning_tokens', ''),
         }
         rows.append(row)
     
@@ -129,7 +131,8 @@ def main():
             'question_id', 'answer', 'model', 'prompt_variant', 'sample_idx',
             'is_human', 'grader_model', 'thesis_clarity', 'argumentative_soundness',
             'dialectical_engagement', 'precision_distinctions', 'substantive_contribution',
-            'example_quality', 'total', 'timestamp', 'answer_char_count', 'reasoning_char_count'
+            'example_quality', 'total', 'timestamp', 'answer_char_count', 'reasoning_char_count',
+            'output_tokens', 'reasoning_tokens'
         ]
         
         with open(output_file, 'w', newline='') as f:

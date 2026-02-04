@@ -1,0 +1,16 @@
+question_id,answer,model,prompt_variant,sample_idx,is_human,grader_model,thesis_clarity,argumentative_soundness,dialectical_engagement,precision_distinctions,substantive_contribution,example_quality,total,timestamp,answer_char_count,reasoning_char_count,output_tokens,reasoning_tokens
+Enoch-FalseConsciousnessLiberals-2020,"1. Introduction  
+
+Philosophers working on autonomy and justice have long puzzled over the phenomenon that Amartya Sen, Jon Elster and Martha Nussbaum call adaptive or “sour-grapes” preferences. An agent whose life prospects are restricted by poverty, patriarchy, racism, colonisation or illness sometimes comes genuinely to prefer the restricted menu of options she in fact possesses. The girl in a traditional village says that she positively wants early marriage rather than education; an urban po",openai/o3,answer_without_rubric_2k,0,False,openai/o3,6,6,6,6,5,5,34,2026-02-04T01:32:55.187388,15833,0,3117,128
+Enoch-FalseConsciousnessLiberals-2020,"                                Adaptive Preferences and the Conditions of Autonomy  
+                                    —––––––––––––––––––––––––––––––––––––––—  
+
+1. Introduction  
+
+When Bangladeshi village women declare that they do not want to be educated because “a good wife stays close to the homestead,” or when members of a lower caste in rural India express indifference toward political participation because “politics is for our betters,” many philosophers and development economists hes",openai/o3,answer_without_rubric_2k,1,False,openai/o3,5,5,5,5,4,5,29,2026-02-04T01:32:55.187388,14557,0,2929,64
+Koskinen-DefendingRiskAccount-2020,"1. Introduction  
+
+The slogan that “objectivity is what we can trust” is intuitively attractive.  Scientists, policy-makers, and an interested public all want to know whether data, models, or expert judgments are objective because they want to know whether these things are trustworthy.  Yet the slogan also threatens vacuity.  What precisely is it about an experimental protocol, a convergent measurement, or an open, critical dialogue within a research community that makes any of them worthy of tr",openai/o3,answer_without_rubric_2k,0,False,openai/o3,6,6,5,6,6,5,34,2026-02-04T01:32:55.187388,14663,0,2933,128
+Koskinen-DefendingRiskAccount-2020,"1. Introduction  
+
+When scientists say that a result is “objective,” the term typically functions as a ringing seal of approval: accept this claim, it can be relied on. Arthur Fine (1998) captures the sentiment in a slogan: “objectivity is just what we—as a community—can trust.” Heather Douglas (2004) echoes the idea, emphasizing that objectivity matters chiefly because it allows lay publics, policymakers, and scientists themselves to trust the outputs of scientific work. Yet the identification ",openai/o3,answer_without_rubric_2k,1,False,openai/o3,5,5,5,6,6,4,31,2026-02-04T01:32:55.187388,13787,0,3283,576

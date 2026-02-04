@@ -8,6 +8,9 @@ Usage:
 
     # Generate and grade in one command
     python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt answer_with_rubric --samples 5 --grade
+
+    # Use custom data version folder (e.g., for o3 experiments)
+    python generate_answers.py --model openai/o3 --prompt v2_tryhard_norubric --samples 5 --data-version v2_o3 --grade
 """
 
 import argparse
@@ -84,7 +87,7 @@ async def generate_openai_single(
     prompt: str,
     model: str,
     temperature: float,
-) -> dict[str, str | None]:
+) -> dict[str, str | int | None]:
     """Generate a single response using OpenAI API with retries."""
     # Strip "openai/" prefix
     model_name = model.replace("openai/", "")
@@ -97,10 +100,20 @@ async def generate_openai_single(
                     input=[{"role": "user", "content": prompt}],
                     temperature=temperature,
                 )
-            return {
+            
+            result = {
                 "content": response.output_text,
-                "reasoning": None,  # OpenAI API doesn't expose reasoning tokens
+                "reasoning": None,  # OpenAI API doesn't expose reasoning text
             }
+            
+            # Extract token counts if available
+            if hasattr(response, 'usage') and response.usage:
+                usage = response.usage
+                result["output_tokens"] = getattr(usage, 'output_tokens', None)
+                if hasattr(usage, 'output_tokens_details') and usage.output_tokens_details:
+                    result["reasoning_tokens"] = getattr(usage.output_tokens_details, 'reasoning_tokens', None)
+            
+            return result
         except Exception as e:
             if attempt < MAX_RETRIES - 1:
                 delay = RETRY_DELAY_BASE ** (attempt + 1)
@@ -207,6 +220,12 @@ async def generate_single_sample(
     if response_data.get("reasoning"):
         entry["reasoning"] = response_data["reasoning"]
 
+    # Include token counts if present (OpenAI models)
+    if response_data.get("output_tokens") is not None:
+        entry["output_tokens"] = response_data["output_tokens"]
+    if response_data.get("reasoning_tokens") is not None:
+        entry["reasoning_tokens"] = response_data["reasoning_tokens"]
+
     return entry
 
 
@@ -234,18 +253,23 @@ async def generate_answers(
     question_indices: str | None = None,
     rubric_name: str = "response_rubric_v2",
     sample_start: int = 0,
-) -> tuple[Path, str]:
-    """Generate answers for all questions and save to a run folder."""
+    data_version: str | None = None,
+) -> tuple[Path, str, str]:
+    """Generate answers for all questions and save to a run folder.
+    
+    Returns: (run_dir, run_name, data_version)
+    """
     # Setup
     base_dir = Path(__file__).parent
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    rubric_version = get_rubric_version(rubric_name)
+    # Use explicit data_version if provided, otherwise derive from rubric
+    data_version = data_version or get_rubric_version(rubric_name)
 
     if run_name is None:
         model_short = model.split("/")[-1]
         run_name = f"{model_short}_{prompt_name}_{timestamp}"
 
-    run_dir = base_dir / "data" / rubric_version / "runs" / run_name
+    run_dir = base_dir / "data" / data_version / "runs" / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # Load data
@@ -270,6 +294,7 @@ async def generate_answers(
         "provider": provider,
         "question_indices": question_indices,
         "rubric": rubric_name,
+        "data_version": data_version,
         "timestamp": timestamp,
         "n_questions": len(questions),
         "sample_start": sample_start,
@@ -286,6 +311,7 @@ async def generate_answers(
     print(f"  Provider:    {provider or '(default)'}")
     print(f"  Prompt:      {prompt_name}")
     print(f"  Rubric:      {rubric_name}")
+    print(f"  Data ver:    {data_version}")
     print(f"  Temperature: {temperature}")
     print(f"  Questions:   {len(questions)}")
     print(f"  Samples:     {n_samples} per question (indices {sample_start}-{sample_start + n_samples - 1})")
@@ -379,7 +405,7 @@ async def generate_answers(
             f.write(json.dumps(entry) + "\n")
 
     print(f"\nDone! {len(successful)}/{len(results)} answers saved to {answers_file}")
-    return run_dir, run_name
+    return run_dir, run_name, data_version
 
 
 async def main():
@@ -395,10 +421,11 @@ async def main():
     parser.add_argument("--grade", action="store_true", help="Automatically grade answers after generation")
     parser.add_argument("--grader", help="Grader model (default: same as --model)")
     parser.add_argument("--sample-start", type=int, default=0, help="Starting sample index (default: 0)")
+    parser.add_argument("--data-version", help="Data version folder (default: derived from rubric, e.g., v2)")
 
     args = parser.parse_args()
 
-    run_dir, run_name = await generate_answers(
+    run_dir, run_name, data_version = await generate_answers(
         model=args.model,
         prompt_name=args.prompt,
         n_samples=args.samples,
@@ -408,6 +435,7 @@ async def main():
         question_indices=args.questions,
         rubric_name=args.rubric,
         sample_start=args.sample_start,
+        data_version=args.data_version,
     )
 
     # Auto-grade if requested
@@ -420,6 +448,7 @@ async def main():
             grader_model=grader_model,
             provider=args.provider,
             rubric_name=args.rubric,
+            data_version=data_version,
         )
 
 

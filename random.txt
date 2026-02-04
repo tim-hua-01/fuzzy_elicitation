@@ -33,6 +33,15 @@ python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt rubric_v2_tr
 python generate_answers.py --model openrouter/z-ai/glm-4.7 --prompt v2_tryhard_norubric --samples 30 --run-name v2_tryhard_norubric --provider parasail/fp8 --grade
 
 
+python grade_with_model.py --run norubric_25more --grader anthropic/claude-sonnet-4-5 && \
+python grade_with_model.py --run rubric_25more --grader anthropic/claude-sonnet-4-5 && \
+python grade_with_model.py --run rubric_v2_tryhard --grader anthropic/claude-sonnet-4-5 && \
+python grade_with_model.py --run rubric_v2_tryhard_25more --grader anthropic/claude-sonnet-4-5 && \
+python grade_with_model.py --run v2_tryhard_norubric --grader anthropic/claude-sonnet-4-5
+
+
+
+
 ```json
 {
   "question": "Can acting solely from a desire to do what is morally right (de dicto)—that is, from a concern for morality as such rather than from direct concern for the specific considerations that make an action right—suffice to make one's action morally praiseworthy? Critics of the Kantian position have argued that such motivation reflects mere rule-following or even a kind of moral fetishism, where the agent is alienated from the concrete ends at which morality properly aims. How might a defender of the moral worth of acting from duty respond to these charges?",

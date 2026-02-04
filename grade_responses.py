@@ -8,6 +8,9 @@ Usage:
 
     # Grade human baselines
     python grade_responses.py --human --grader openai/gpt-4o
+
+    # Use custom data version folder
+    python grade_responses.py --run my_run --grader openai/gpt-4o --data-version v2_o3
 """
 
 import argparse
@@ -232,7 +235,7 @@ def append_to_csv(results: list[dict], csv_path: Path):
 
     # Build fieldnames dynamically
     base_fields = ["question_id", "answer", "model", "prompt_variant", "sample_idx", "is_human", "grader_model"]
-    fieldnames = base_fields + score_keys + ["total", "timestamp", "answer_char_count", "reasoning_char_count"]
+    fieldnames = base_fields + score_keys + ["total", "timestamp", "answer_char_count", "reasoning_char_count", "output_tokens", "reasoning_tokens"]
 
     file_exists = csv_path.exists() and csv_path.stat().st_size > 0
     timestamp = datetime.now().isoformat()
@@ -245,7 +248,7 @@ def append_to_csv(results: list[dict], csv_path: Path):
             # Merge any new score fields
             for field in fieldnames:
                 if field not in existing_fields:
-                    existing_fields.insert(-1, field)  # Insert before timestamp
+                    existing_fields.append(field)
             fieldnames = existing_fields
 
     with open(csv_path, "a", newline="") as f:
@@ -260,7 +263,7 @@ def append_to_csv(results: list[dict], csv_path: Path):
 
             # Calculate character counts
             answer_text = r.get("answer", "")
-            reasoning_text = r.get("grader_reasoning", "")
+            reasoning_text = r.get("grader_reasoning", "") or r.get("answer_reasoning", "")
             answer_char_count = len(answer_text) if answer_text else 0
             reasoning_char_count = len(reasoning_text) if reasoning_text else 0
 
@@ -275,6 +278,8 @@ def append_to_csv(results: list[dict], csv_path: Path):
                 "timestamp": timestamp,
                 "answer_char_count": answer_char_count,
                 "reasoning_char_count": reasoning_char_count,
+                "output_tokens": r.get("output_tokens", ""),
+                "reasoning_tokens": r.get("reasoning_tokens", ""),
             }
 
             # Add all score fields dynamically
@@ -284,11 +289,12 @@ def append_to_csv(results: list[dict], csv_path: Path):
             writer.writerow(row)
 
 
-async def grade_run(run_name: str, grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2"):
+async def grade_run(run_name: str, grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2", data_version: str | None = None):
     """Grade all answers from a run."""
     base_dir = Path(__file__).parent
-    rubric_version = get_rubric_version(rubric_name)
-    run_dir = base_dir / "data" / rubric_version / "runs" / run_name
+    # Use explicit data_version if provided, otherwise derive from rubric
+    data_version = data_version or get_rubric_version(rubric_name)
+    run_dir = base_dir / "data" / data_version / "runs" / run_name
     answers_file = run_dir / "answers.jsonl"
 
     if not answers_file.exists():
@@ -309,6 +315,7 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
     print(f"  Grader:      {grader_model}")
     print(f"  Provider:    {provider or '(default)'}")
     print(f"  Rubric:      {rubric_name}")
+    print(f"  Data ver:    {data_version}")
     print(f"  Answers:     {len(entries)}")
     print("=" * 50 + "\n")
 
@@ -345,9 +352,17 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
         if http_client:
             await http_client.aclose()
 
-    # Add answers to results for CSV
+    # Add answers and token counts to results for CSV
     for r, entry in zip(results, entries):
         r["answer"] = entry["answer"]
+        # Pass through token counts if present
+        if entry.get("output_tokens") is not None:
+            r["output_tokens"] = entry["output_tokens"]
+        if entry.get("reasoning_tokens") is not None:
+            r["reasoning_tokens"] = entry["reasoning_tokens"]
+        # Pass through reasoning text if present
+        if entry.get("reasoning"):
+            r["answer_reasoning"] = entry["reasoning"]
 
     # Save grades to run folder
     grades_file = run_dir / "grades.jsonl"
@@ -356,7 +371,7 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
             f.write(json.dumps(r) + "\n")
 
     # Append to versioned CSV
-    csv_path = base_dir / "data" / rubric_version / "all_results.csv"
+    csv_path = base_dir / "data" / data_version / "all_results.csv"
     append_to_csv(results, csv_path)
 
     # Summary
@@ -370,9 +385,11 @@ async def grade_run(run_name: str, grader_model: str, provider: str | None = Non
     print(f"Average total score: {avg_total:.1f}")
 
 
-async def grade_human_baselines(grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2"):
+async def grade_human_baselines(grader_model: str, provider: str | None = None, rubric_name: str = "response_rubric_v2", data_version: str | None = None):
     """Grade the human baseline answers."""
     base_dir = Path(__file__).parent
+    # Use explicit data_version if provided, otherwise derive from rubric
+    data_version = data_version or get_rubric_version(rubric_name)
     questions_file = base_dir / "main_questions.jsonl"
 
     # Load questions with human answers
@@ -398,6 +415,7 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
     print(f"  Grader:      {grader_model}")
     print(f"  Provider:    {provider or '(default)'}")
     print(f"  Rubric:      {rubric_name}")
+    print(f"  Data ver:    {data_version}")
     print(f"  Answers:     {len(entries)}")
     print("=" * 50 + "\n")
 
@@ -440,8 +458,7 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
 
     # Save to human_grades folder
     grader_name = grader_model.replace("/", "_")
-    rubric_version = get_rubric_version(rubric_name)
-    human_grades_dir = base_dir / "data" / rubric_version / "human_grades"
+    human_grades_dir = base_dir / "data" / data_version / "human_grades"
     human_grades_dir.mkdir(parents=True, exist_ok=True)
 
     grades_file = human_grades_dir / f"{grader_name}.jsonl"
@@ -450,7 +467,7 @@ async def grade_human_baselines(grader_model: str, provider: str | None = None, 
             f.write(json.dumps(r) + "\n")
 
     # Append to versioned CSV
-    csv_path = base_dir / "data" / rubric_version / "all_results.csv"
+    csv_path = base_dir / "data" / data_version / "all_results.csv"
     append_to_csv(results, csv_path)
 
     # Summary
@@ -470,13 +487,14 @@ async def main():
     parser.add_argument("--grader", required=True, help="Grader model (e.g., openai/gpt-4o)")
     parser.add_argument("--provider", help="OpenRouter provider (e.g., together, openai)")
     parser.add_argument("--rubric", default="response_rubric_v2", help="Rubric file name without .md (default: response_rubric_v2)")
+    parser.add_argument("--data-version", help="Data version folder (default: derived from rubric, e.g., v2)")
 
     args = parser.parse_args()
 
     if args.human:
-        await grade_human_baselines(args.grader, args.provider, args.rubric)
+        await grade_human_baselines(args.grader, args.provider, args.rubric, args.data_version)
     elif args.run:
-        await grade_run(args.run, args.grader, args.provider, args.rubric)
+        await grade_run(args.run, args.grader, args.provider, args.rubric, args.data_version)
     else:
         parser.error("Must specify either --run or --human")
 
