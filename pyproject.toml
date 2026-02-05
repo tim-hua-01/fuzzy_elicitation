@@ -5,5 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "hf-transfer>=0.1.9",
     "vllm>=0.15.1",
 ]
