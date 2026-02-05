@@ -46,6 +46,40 @@ df %<>% mutate(normaizled_score = (total - mean(total))/sd(total),
                                               sd(reasoning_char_count),
                normalized_answer_char = (answer_char_count - mean(answer_char_count))/
                                               sd(answer_char_count))
+
+o3 <- read_csv("data/v2_o3/all_results.csv")
+o3 %>% skim(total)
+df %>% skim(total, claude_total)
+o3 %<>% mutate(normalize_score = (total - mean(total))/sd(total))
+
+feols(normalize_score ~ as.factor(prompt_variant) - 1,
+      data = o3, vcov = ~question_id)
+
+m1 <- feols(normalize_score ~ as.factor(prompt_variant),
+            data = o3, vcov = ~question_id)
+
+m2 <- feols(normalize_score ~ as.factor(prompt_variant) +
+              output_tokens +
+              reasoning_tokens,
+            data = o3, vcov = ~question_id)
+
+m3 <- feols(normalize_score ~ as.factor(prompt_variant) +
+              output_tokens +
+              reasoning_tokens +
+              output_tokens*reasoning_tokens +
+              I(output_tokens^2) +
+              I(reasoning_tokens^2),
+            data = o3, vcov = ~question_id)
+
+modelsummary(
+  list("Model 1" = m1, "Model 2" = m2, "Model 3" = m3),
+  statistic = "conf.int",
+  stars = TRUE,
+  gof_omit = "IC|Log|FE|RMSE"
+)
+
+
+
 claude_grades <- read_csv("data/v2/all_results_anthropic_claude-sonnet-4-5.csv") %>%
   mutate(prompt_variant = ifelse(!is.na(prompt_variant), prompt_variant, "human")) %>% filter(!is.na(answer))
 
@@ -60,7 +94,7 @@ claude_grades%>% select(total) %>% skim()
 df %<>% left_join(claude_grades %>% select(claude_total, claude_normalized, question_id, sample_idx,prompt_variant))
 
 
-df %>% skim()
+df %>% skim(total)
 
 df %>% group_by(prompt_variant) %>% skim()
 
@@ -68,6 +102,7 @@ df %>% group_by(prompt_variant, question_id) %>% summarize(best_of_n = max(total
                                                            worst = min(total))%>% 
   group_by(prompt_variant) %>% skim()
 
+df %>% filter(total <= 30 | total >= 33) %>% group_by(total > 30) %>% count(prompt_variant)
 
 feols(total ~ as.factor(prompt_variant)+ 
         normalized_answer_char + normalized_reasoning_char, data = df, vcov = ~question_id)
@@ -143,15 +178,15 @@ regression_data_absolute %>%
                 width = 0.2, linewidth = 0.5) +
   scale_fill_manual(values = c(niceblue,"#E74C3C",nicegreen, nicepurp)) +
   scale_y_continuous(breaks = seq(-1,1,0.25)) +
-  labs(title = "Prompting the model to try harder increases self-graded score by 0.5
-standard deviations on philosophy questions",
+  labs(title = "Prompting the GLM-4.7 to try harder increases self-graded score 
+on philosophy questions",
        subtitle = "95% confident intervals shown. Score normalized to have zero mean and unit standard deviation.",
        x = "Prompt Variant",
        y = "Normalized Score",
        fill = "Prompt Variant",
        caption = "Ten philosophy questions sampled 30 times each. Standard errors clustered at the question level
 Controlling for response and reasoning lengths.") +
-  myTheme#
+  myTheme + theme(legend.position = "none")
 
 # Bar chart comparing total vs claude_total across prompt variants (no intercept)
 model_total <- feols(total ~ as.factor(prompt_variant) - 1, data = df, vcov = ~question_id)
@@ -202,7 +237,129 @@ compared to rubric only by 0.37 standard deviations",
 feols(normaizled_score ~ as.factor(prompt_variant) + 
         normalized_answer_char + normalized_reasoning_char, data = df, vcov = ~question_id)
 
-feols(answer_char_count ~ as.factor(prompt_variant) , data = df, vcov = ~question_id)
+feols(normalized_answer_char ~ as.factor(prompt_variant) , data = df, vcov = ~question_id)
 
-feols(reasoning_char_count ~ as.factor(prompt_variant) , data = df, vcov = ~question_id)
+feols(normalized_reasoning_char ~ as.factor(prompt_variant) , data = df, vcov = ~question_id)
+
+df %>% mutate(question_id_short = str_sub(question_id, 1, 17)) %>%
+  group_by(question_id_short, prompt_variant) %>% 
+  summarise(mean_tot = mean(total), sd_tot = sd(total), 
+            max_tot = max(total)) %>%
+  ggplot(aes(prompt_variant, mean_tot)) + 
+  geom_col(width = 0.7) + facet_wrap(~question_id_short) + 
+  myTheme  + coord_flip(ylim = c(29,36))
+
+
+df %>% mutate(question_id_short = str_sub(question_id, 1, 17)) %>%
+  group_by(question_id_short, prompt_variant) %>% 
+  summarise(mean_tot = mean(total), sd_tot = sd(total)) %>%
+  ggplot(aes(prompt_variant, sd_tot)) + 
+  geom_col(width = 0.7) + facet_wrap(~question_id_short) + 
+  myTheme  + coord_flip(ylim = c(1,3))
+
+df %>% mutate(question_id_short = str_sub(question_id, 1, 17)) %>%
+  group_by(question_id_short, prompt_variant) %>% 
+  summarise(mean_tot = mean(total), sd_tot = sd(total), 
+            p90 = quantile(total,0.9)) %>%
+  ggplot(aes(prompt_variant, p90)) + 
+  geom_col(width = 0.7) + facet_wrap(~question_id_short) + 
+  myTheme  + coord_flip(ylim = c(30,40))
+
+library(fixest)
+library(modelsummary)
+
+m1 <- feols(normaizled_score ~ as.factor(prompt_variant),
+            data = df, vcov = ~question_id)
+
+m2 <- feols(normaizled_score ~ as.factor(prompt_variant) +
+              normalized_answer_char +
+              normalized_reasoning_char,
+            data = df, vcov = ~question_id)
+
+m3 <- feols(normaizled_score ~ as.factor(prompt_variant) +
+              normalized_answer_char +
+              normalized_reasoning_char +
+              normalized_answer_char*normalized_reasoning_char +
+              I(normalized_answer_char^2) +
+              I(normalized_reasoning_char^2),
+            data = df, vcov = ~question_id)
+
+modelsummary(
+  list("Model 1" = m1, "Model 2" = m2, "Model 3" = m3),
+  statistic = "conf.int",
+  stars = TRUE,
+  gof_omit = "IC|Log|FE|RMSE"
+)
+
+m1 <- feols(claude_normalized ~ as.factor(prompt_variant),
+            data = df, vcov = ~question_id)
+
+m2 <- feols(claude_normalized ~ as.factor(prompt_variant) +
+              normalized_answer_char +
+              normalized_reasoning_char,
+            data = df, vcov = ~question_id)
+
+m3 <- feols(claude_normalized ~ as.factor(prompt_variant) +
+              normalized_answer_char +
+              normalized_reasoning_char +
+              normalized_answer_char*normalized_reasoning_char +
+              I(normalized_answer_char^2) +
+              I(normalized_reasoning_char^2),
+            data = df, vcov = ~question_id)
+
+modelsummary(
+  list("Model 1" = m1, "Model 2" = m2, "Model 3" = m3),
+  statistic = "conf.int",
+  stars = TRUE,
+  gof_omit = "IC|Log|FE|RMSE"
+)
+
+# Bar chart for o3 data (no intercept model)
+model_o3 <- feols(normalize_score ~ as.factor(prompt_variant) - 1,
+                  data = o3, vcov = ~question_id)
+
+# Extract coefficients
+coefs_o3 <- tidy(model_o3, conf.int = TRUE)
+
+# Create data frame for plotting
+o3_data <- coefs_o3 %>%
+  mutate(prompt_variant = str_replace(term, "as.factor\\(prompt_variant\\)", "")) %>%
+  select(prompt_variant, estimate, std_error = std.error)
+
+# Create bar chart
+o3_data %>%
+  mutate(prompt_variant = case_when(
+    prompt_variant == 'answer_with_rubric_2k' ~ "With Rubric",
+    prompt_variant == 'answer_without_rubric_2k' ~ "No Rubric",
+    prompt_variant == 'rubric_v2_tryhard' ~ "With Rubric & Try Hard",
+    TRUE ~ "No Rubric & Try Hard"
+  )) %>%
+  ggplot(aes(x = prompt_variant, y = estimate, fill = prompt_variant)) +
+  geom_bar(stat = "identity", width = 0.7) +
+  geom_errorbar(aes(ymin = estimate - 1.96 * std_error, 
+                    ymax = estimate + 1.96 * std_error),
+                width = 0.3, linewidth = 0.5) +
+  scale_fill_manual(values = c(niceblue, "#E74C3C", nicegreen, nicepurp)) +
+  scale_y_continuous(breaks = seq(-1,1,0.25)) + 
+  labs(title = "o3 Model: Normalized Scores by Prompt Variant",
+       subtitle = "95% confidence intervals shown. Standard errors clustered at question level.",
+       x = "Prompt Variant",
+       y = "Normalized Score",
+       fill = "Prompt Variant") +
+  myTheme + theme(legend.position = "none")
+
+
+
+p <- 15 / 365
+n <- 30
+
+p0 <- (1 - p)^n
+p1 <- choose(n, 1) * p * (1 - p)^(n - 1)
+
+prob <- 1 - p0 - p1
+
+cat("P(X = 0):", p0, "\n")
+cat("P(X = 1):", p1, "\n")
+cat("P(X >= 2):", prob, "\n")
+
 

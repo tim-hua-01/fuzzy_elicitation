@@ -441,6 +441,46 @@
             font-size: 12px;
             padding: 10px;
         }
+
+        /* Panel collapse styles */
+        .sidebar.collapsed,
+        .grades-panel.collapsed {
+            display: none;
+        }
+
+        .resizer.hidden {
+            display: none;
+        }
+
+        /* Toggle buttons */
+        .panel-toggle {
+            padding: 6px 10px;
+            background: #e0e0e0;
+            color: #555;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .panel-toggle:hover {
+            background: #d0d0d0;
+        }
+
+        .panel-toggle.active {
+            background: #0f3460;
+            color: white;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -448,6 +488,7 @@
         <div class="rubric-toggle">
             <button class="rubric-btn active" data-version="v1">v1</button>
             <button class="rubric-btn" data-version="v2">v2</button>
+            <button class="rubric-btn" data-version="v2_o3">v2_o3</button>
         </div>
 
         <h2>Human Baselines</h2>
@@ -465,6 +506,10 @@
             <select id="answer-select"></select>
             <button class="nav-btn" id="next-btn" disabled>Next &rarr;</button>
             <span id="counter" style="margin-left: auto; color: #888; font-size: 14px;"></span>
+            <div class="toggle-group">
+                <button class="panel-toggle active" id="toggle-sidebar" title="Toggle sidebar ([)">Sidebar</button>
+                <button class="panel-toggle active" id="toggle-grades" title="Toggle grades (])">Grades</button>
+            </div>
         </div>
 
         <div class="content-wrapper">
@@ -917,12 +962,42 @@
                 await loadGradesForCurrentGrader();
             };
 
+            // Panel toggle functionality
+            const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+            const toggleGradesBtn = document.getElementById('toggle-grades');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarResizer = document.getElementById('sidebar-resizer');
+            const gradesPanel = document.getElementById('grades-panel');
+            const gradesResizer = document.getElementById('grades-resizer');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('collapsed');
+                sidebarResizer.classList.toggle('hidden');
+                toggleSidebarBtn.classList.toggle('active');
+            }
+
+            function toggleGrades() {
+                gradesPanel.classList.toggle('collapsed');
+                gradesResizer.classList.toggle('hidden');
+                toggleGradesBtn.classList.toggle('active');
+            }
+
+            toggleSidebarBtn.onclick = toggleSidebar;
+            toggleGradesBtn.onclick = toggleGrades;
+
             // Keyboard navigation
             document.addEventListener('keydown', (e) => {
+                // Don't trigger if typing in an input/select
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+                
                 if (e.key === 'ArrowLeft') {
                     document.getElementById('prev-btn').click();
                 } else if (e.key === 'ArrowRight') {
                     document.getElementById('next-btn').click();
+                } else if (e.key === '[') {
+                    toggleSidebar();
+                } else if (e.key === ']') {
+                    toggleGrades();
                 }
             });
 

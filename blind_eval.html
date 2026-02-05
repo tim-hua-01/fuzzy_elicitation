@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Evaluation</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .controls {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #16213e;
+            color: #eee;
+        }
+
+        .control-group input {
+            width: 80px;
+        }
+
+        .control-group select {
+            min-width: 200px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #0f3460;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1a4a80;
+        }
+
+        .btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+
+        .btn.reveal {
+            background: #4caf50;
+        }
+
+        .btn.reveal:hover {
+            background: #45a049;
+        }
+
+        .question-display {
+            background: #e8f4f8;
+            border-left: 4px solid #0f3460;
+            padding: 15px 20px;
+            margin: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question-display h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .question-display p {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            padding: 0 20px 20px;
+        }
+
+        .response-card {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .response-header {
+            background: #f8f8f8;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .response-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .response-meta {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            gap: 10px;
+        }
+
+        .response-meta .tag {
+            background: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .response-meta.hidden .tag {
+            background: #ddd;
+            color: #ddd;
+        }
+
+        .response-body {
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .response-body .answer-content {
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .response-body .answer-content p {
+            margin-bottom: 1em;
+        }
+
+        .score-display {
+            padding: 15px 20px;
+            background: #f0f0f0;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f3460;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #888;
+            padding: 60px 20px;
+            font-size: 16px;
+        }
+
+        .pick-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            margin: 0 20px 20px;
+            border-radius: 8px;
+        }
+
+        .pick-btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .pick-btn.a {
+            background: #2196f3;
+        }
+
+        .pick-btn.a:hover {
+            background: #1976d2;
+        }
+
+        .pick-btn.b {
+            background: #ff9800;
+        }
+
+        .pick-btn.b:hover {
+            background: #f57c00;
+        }
+
+        .result-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .result-message.correct {
+            color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .result-message.incorrect {
+            color: #f44336;
+            background: #ffebee;
+        }
+
+        .stats {
+            margin-left: auto;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .grader-select {
+            min-width: 150px !important;
+        }
+
+        .score-breakdown {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .score-breakdown .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        .score-breakdown .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .score-breakdown .score-name {
+            color: #555;
+        }
+
+        .score-breakdown .score-val {
+            font-weight: 600;
+            width: 28px;
+            text-align: center;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .score-8 { background: #1b5e20; color: #fff; }
+        .score-7 { background: #2e7d32; color: #fff; }
+        .score-6 { background: #43a047; color: #fff; }
+        .score-5 { background: #c8e6c9; color: #2e7d32; }
+        .score-4 { background: #dcedc8; color: #558b2f; }
+        .score-3 { background: #fff9c4; color: #f9a825; }
+        .score-2 { background: #ffecb3; color: #ff8f00; }
+        .score-1 { background: #ffcdd2; color: #c62828; }
+        .score-0 { background: #ffcdd2; color: #c62828; }
+
+        .filter-bar {
+            background: #16213e;
+            padding: 10px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-bar .filter-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #888;
+            margin-right: 5px;
+        }
+
+        .filter-bar .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-bar label.checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .filter-bar input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <div class="control-group">
+            <label>Version</label>
+            <select id="version-select">
+                <option value="v1">v1</option>
+                <option value="v2" selected>v2</option>
+                <option value="v2_o3">v2_o3</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Document</label>
+            <select id="doc-select">
+                <option value="">Loading...</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Grader</label>
+            <select id="grader-select" class="grader-select">
+                <option value="grades.jsonl">default</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Max score (worse)</label>
+            <input type="number" id="max-worse" value="28" min="0" max="40">
+        </div>
+
+        <div class="control-group">
+            <label>Min score (better)</label>
+            <input type="number" id="min-better" value="32" min="0" max="40">
+        </div>
+
+        <button class="btn" id="randomize-btn">Randomize</button>
+        <button class="btn reveal" id="reveal-btn" disabled>Reveal Scores</button>
+
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="filter-bar">
+        <span class="filter-label">Prompt formats:</span>
+        <div class="checkbox-group" id="prompt-filters"></div>
+    </div>
+
+    <div id="question-container"></div>
+    <div id="pick-container"></div>
+    <div id="result-container"></div>
+    <div class="comparison-container" id="comparison-container">
+        <div class="empty-state">Select a document and click Randomize to start</div>
+    </div>
+
+    <script>
+        let allData = {};  // { runName: { answers: [], grades: [] } }
+        let currentVersion = 'v2';
+        let currentGraderFile = 'grades.jsonl';
+        let responseA = null;
+        let responseB = null;
+        let revealed = false;
+        let stats = { correct: 0, total: 0 };
+
+        // Prompt groups - runs that share the same prompt template
+        const promptGroups = {
+            'v1': {
+                'test_gemma': 'gemma',
+                'test_glm': 'glm_basic',
+                'test_glm_with_rubric': 'glm_rubric',
+                'glm_q7_v1': 'glm_q7'
+            },
+            'v2': {
+                'norubric': 'norubric',
+                'norubric_25more': 'norubric',
+                'rubric': 'rubric',
+                'rubric_25more': 'rubric',
+                'rubric_v2_tryhard': 'tryhard_rubric',
+                'rubric_v2_tryhard_25more': 'tryhard_rubric',
+                'v2_tryhard_norubric': 'tryhard_norubric'
+            },
+            'v2_o3': {
+                'norubric': 'norubric',
+                'norubric_tryhard': 'norubric_tryhard',
+                'rubric': 'rubric',
+                'rubric_tryhard': 'rubric_tryhard'
+            }
+        };
+
+        function getPromptGroup(version, runName) {
+            return promptGroups[version]?.[runName] || runName;
+        }
+
+        function getUniquePromptGroups(version) {
+            const groups = promptGroups[version] || {};
+            return [...new Set(Object.values(groups))];
+        }
+
+        function updatePromptFilters() {
+            const container = document.getElementById('prompt-filters');
+            const groups = getUniquePromptGroups(currentVersion);
+            
+            container.innerHTML = '';
+            groups.forEach(group => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                label.innerHTML = `
+                    <input type="checkbox" value="${group}" checked>
+                    ${group}
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        function getSelectedPromptGroups() {
+            const checkboxes = document.querySelectorAll('#prompt-filters input[type="checkbox"]');
+            const selected = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selected.push(cb.value);
+            });
+            return selected;
+        }
+
+        async function loadAllData() {
+            const version = document.getElementById('version-select').value;
+            currentVersion = version;
+            allData = {};
+
+            try {
+                const response = await fetch(`/api/manifest/${version}`);
+                const manifest = await response.json();
+
+                // Load available graders from first run
+                if (manifest.runs && manifest.runs.length > 0) {
+                    const gradersResponse = await fetch(`/api/graders/${version}/${manifest.runs[0]}`);
+                    const graders = await gradersResponse.json();
+                    
+                    const graderSelect = document.getElementById('grader-select');
+                    graderSelect.innerHTML = '';
+                    graders.forEach(g => {
+                        const opt = document.createElement('option');
+                        opt.value = g.file;
+                        opt.textContent = g.name;
+                        graderSelect.appendChild(opt);
+                    });
+                    currentGraderFile = graders[0]?.file || 'grades.jsonl';
+                }
+
+                // Load all runs
+                for (const run of manifest.runs) {
+                    try {
+                        const [answersResp, gradesResp] = await Promise.all([
+                            fetch(`data/${version}/runs/${run}/answers.jsonl`),
+                            fetch(`data/${version}/runs/${run}/${currentGraderFile}`)
+                        ]);
+
+                        const answersText = await answersResp.text();
+                        const gradesText = await gradesResp.text();
+
+                        const answers = answersText.trim().split('\n').filter(l => l).map(l => JSON.parse(l));
+                        const grades = gradesText.trim().split('\n').filter(l => l).map(l => JSON.parse(l));
+
+                        allData[run] = { answers, grades };
+                    } catch (e) {
+                        console.warn(`Failed to load run ${run}:`, e);
+                    }
+                }
+
+                updateDocSelect();
+                updatePromptFilters();
+            } catch (e) {
+                console.error('Failed to load data:', e);
+            }
+        }
+
+        async function reloadGrades() {
+            const version = currentVersion;
+            currentGraderFile = document.getElementById('grader-select').value;
+
+            for (const run of Object.keys(allData)) {
+                try {
+                    const gradesResp = await fetch(`data/${version}/runs/${run}/${currentGraderFile}`);
+                    const gradesText = await gradesResp.text();
+                    const grades = gradesText.trim().split('\n').filter(l => l).map(l => JSON.parse(l));
+                    allData[run].grades = grades;
+                } catch (e) {
+                    console.warn(`Failed to reload grades for ${run}:`, e);
+                }
+            }
+        }
+
+        function updateDocSelect() {
+            const docSelect = document.getElementById('doc-select');
+            const docs = new Set();
+
+            for (const run of Object.values(allData)) {
+                for (const answer of run.answers) {
+                    docs.add(answer.question_id);
+                }
+            }
+
+            docSelect.innerHTML = '';
+            const sortedDocs = Array.from(docs).sort();
+            for (const doc of sortedDocs) {
+                const opt = document.createElement('option');
+                opt.value = doc;
+                opt.textContent = doc;
+                docSelect.appendChild(opt);
+            }
+        }
+
+        function getAllResponsesForDoc(questionId) {
+            const responses = [];
+
+            for (const [runName, data] of Object.entries(allData)) {
+                for (const answer of data.answers) {
+                    if (answer.question_id === questionId) {
+                        const grade = data.grades.find(g => 
+                            g.question_id === questionId && g.sample_idx === answer.sample_idx
+                        );
+                        if (grade && grade.scores) {
+                            responses.push({
+                                ...answer,
+                                runName,
+                                promptGroup: getPromptGroup(currentVersion, runName),
+                                score: grade.scores.total,
+                                scores: grade.scores  // Store full breakdown
+                            });
+                        }
+                    }
+                }
+            }
+
+            return responses;
+        }
+
+        function formatScoreName(key) {
+            return key
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        function renderScoreBreakdown(scores) {
+            let html = '<div class="score-breakdown">';
+            for (const [key, value] of Object.entries(scores)) {
+                if (key === 'total') continue;
+                const score = value || 0;
+                html += `
+                    <div class="score-item">
+                        <span class="score-name">${formatScoreName(key)}</span>
+                        <span class="score-val score-${score}">${score}</span>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function randomize() {
+            const questionId = document.getElementById('doc-select').value;
+            const maxWorse = parseInt(document.getElementById('max-worse').value);
+            const minBetter = parseInt(document.getElementById('min-better').value);
+            const selectedGroups = getSelectedPromptGroups();
+
+            if (selectedGroups.length === 0) {
+                alert('Please select at least one prompt format.');
+                return;
+            }
+
+            const allResponses = getAllResponsesForDoc(questionId);
+            
+            // Filter by selected prompt groups
+            const responses = allResponses.filter(r => selectedGroups.includes(r.promptGroup));
+
+            // Split into worse and better based on thresholds
+            const worse = responses.filter(r => r.score <= maxWorse);
+            const better = responses.filter(r => r.score >= minBetter);
+
+            // Try to find a pair from different prompt groups
+            let candidates = [];
+            for (const w of worse) {
+                for (const b of better) {
+                    if (w.promptGroup !== b.promptGroup) {
+                        candidates.push([w, b]);
+                    }
+                }
+            }
+
+            if (candidates.length === 0) {
+                alert(`No valid pairs found!\n\nSelected formats: ${selectedGroups.join(', ')}\nWorse (score <= ${maxWorse}): ${worse.length} responses\nBetter (score >= ${minBetter}): ${better.length} responses\n\nMake sure the thresholds allow for different prompt groups.`);
+                return;
+            }
+
+            // Pick random pair
+            const [worseResp, betterResp] = candidates[Math.floor(Math.random() * candidates.length)];
+
+            // Randomly assign to A or B
+            if (Math.random() < 0.5) {
+                responseA = betterResp;
+                responseB = worseResp;
+            } else {
+                responseA = worseResp;
+                responseB = betterResp;
+            }
+
+            revealed = false;
+            document.getElementById('reveal-btn').disabled = false;
+            renderComparison();
+        }
+
+        function renderComparison() {
+            const container = document.getElementById('comparison-container');
+            const questionContainer = document.getElementById('question-container');
+            const pickContainer = document.getElementById('pick-container');
+            const resultContainer = document.getElementById('result-container');
+
+            if (!responseA || !responseB) {
+                container.innerHTML = '<div class="empty-state">Select a document and click Randomize to start</div>';
+                questionContainer.innerHTML = '';
+                pickContainer.innerHTML = '';
+                resultContainer.innerHTML = '';
+                return;
+            }
+
+            // Question
+            questionContainer.innerHTML = `
+                <div class="question-display">
+                    <h3>Question (${responseA.question_id})</h3>
+                    <p>${responseA.question}</p>
+                </div>
+            `;
+
+            // Pick buttons (only if not revealed)
+            if (!revealed) {
+                pickContainer.innerHTML = `
+                    <div class="pick-buttons">
+                        <button class="btn pick-btn a" onclick="pickWinner('A')">A is Better</button>
+                        <button class="btn pick-btn b" onclick="pickWinner('B')">B is Better</button>
+                    </div>
+                `;
+            } else {
+                pickContainer.innerHTML = '';
+            }
+
+            // Result message
+            resultContainer.innerHTML = '';
+
+            // Responses
+            container.innerHTML = `
+                <div class="response-card">
+                    <div class="response-header">
+                        <span class="response-label">Response A</span>
+                        <div class="response-meta ${revealed ? '' : 'hidden'}">
+                            <span class="tag">${revealed ? responseA.runName : '???'}</span>
+                            <span class="tag">${revealed ? responseA.promptGroup : '???'}</span>
+                        </div>
+                    </div>
+                    <div class="response-body">
+                        <div class="answer-content">${marked.parse(responseA.answer || '')}</div>
+                    </div>
+                    ${revealed ? `
+                    <div class="score-display">
+                        <div class="score-value">${responseA.score}</div>
+                        <div class="score-label">Total Score</div>
+                        ${renderScoreBreakdown(responseA.scores)}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="response-card">
+                    <div class="response-header">
+                        <span class="response-label">Response B</span>
+                        <div class="response-meta ${revealed ? '' : 'hidden'}">
+                            <span class="tag">${revealed ? responseB.runName : '???'}</span>
+                            <span class="tag">${revealed ? responseB.promptGroup : '???'}</span>
+                        </div>
+                    </div>
+                    <div class="response-body">
+                        <div class="answer-content">${marked.parse(responseB.answer || '')}</div>
+                    </div>
+                    ${revealed ? `
+                    <div class="score-display">
+                        <div class="score-value">${responseB.score}</div>
+                        <div class="score-label">Total Score</div>
+                        ${renderScoreBreakdown(responseB.scores)}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function pickWinner(choice) {
+            const aIsBetter = responseA.score > responseB.score;
+            const userPickedA = choice === 'A';
+            const correct = (aIsBetter && userPickedA) || (!aIsBetter && !userPickedA);
+
+            stats.total++;
+            if (correct) stats.correct++;
+
+            revealed = true;
+            document.getElementById('reveal-btn').disabled = true;
+            renderComparison();
+
+            // Show result
+            const resultContainer = document.getElementById('result-container');
+            const actualBetter = aIsBetter ? 'A' : 'B';
+            resultContainer.innerHTML = `
+                <div class="result-message ${correct ? 'correct' : 'incorrect'}">
+                    ${correct ? 'Correct!' : 'Incorrect.'} 
+                    Response ${actualBetter} scored higher (${Math.max(responseA.score, responseB.score)} vs ${Math.min(responseA.score, responseB.score)}).
+                </div>
+            `;
+
+            updateStats();
+        }
+
+        function reveal() {
+            revealed = true;
+            document.getElementById('reveal-btn').disabled = true;
+            renderComparison();
+        }
+
+        function updateStats() {
+            const statsEl = document.getElementById('stats');
+            if (stats.total > 0) {
+                const pct = Math.round(stats.correct / stats.total * 100);
+                statsEl.textContent = `${stats.correct}/${stats.total} correct (${pct}%)`;
+            } else {
+                statsEl.textContent = '';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('version-select').onchange = loadAllData;
+        document.getElementById('grader-select').onchange = async () => {
+            await reloadGrades();
+        };
+        document.getElementById('randomize-btn').onclick = randomize;
+        document.getElementById('reveal-btn').onclick = reveal;
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') {
+                document.getElementById('randomize-btn').click();
+            } else if (e.key === ' ' && !revealed && responseA && responseB) {
+                reveal();
+                e.preventDefault();
+            } else if ((e.key === 'a' || e.key === 'A' || e.key === '1') && !revealed && responseA && responseB) {
+                pickWinner('A');
+            } else if ((e.key === 'b' || e.key === 'B' || e.key === '2') && !revealed && responseA && responseB) {
+                pickWinner('B');
+            }
+        });
+
+        // Initialize
+        loadAllData();
+    </script>
+</body>
+</html>
