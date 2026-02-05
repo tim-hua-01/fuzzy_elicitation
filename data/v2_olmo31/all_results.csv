@@ -1,0 +1,17 @@
+question_id,answer,model,prompt_variant,sample_idx,is_human,grader_model,thesis_clarity,argumentative_soundness,dialectical_engagement,precision_distinctions,substantive_contribution,example_quality,total,timestamp,answer_char_count,reasoning_char_count,output_tokens,reasoning_tokens
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Title: The Self-Referential Paradox in Causal Decision Theory and the Death in Damascus**  
+
+**Thesis:** The dependence of Causal Decision Theory (CDT) on an agent’s subjective probabilities of performing acts in ""Death in Damascus""-style scenarios creates a self-referential paradox that undermines the theory’s practical adequacy and normative force. This issue arises because CDT’s expected utility calculations incorporate the agent’s credences about their own choices, leading to indeterminacy",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,5,4,5,30,2026-02-05T20:25:34.272176,12634,14589,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### Thesis Clarity: 5  
+The thesis is directly stated in the introduction and frames the analysis effectively, arguing that CDT’s sensitivity to act probabilities in scenarios like ""Death in Damascus"" constitutes a meaningful problem, though one with nuanced qualifications. The position is defended with textual evidence and contextualized within decision theory debates, providing a clear lens for evaluation.
+
+---
+
+### Argumentative Soundness: 6  
+The reasoning is valid and well-supported, though",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,6,5,33,2026-02-05T20:25:34.272176,10327,20151,,
+Jenkin-EpistemicRoleCore-2020,"### Thesis Clarity: 5  
+The answer presents a clear and direct thesis in the introduction and reinforces it throughout: **Lack of conscious awareness does not categorically preclude a mental state from being epistemically based on reasons, as reliable causal connections can establish basing independently of subjective awareness.** The position is articulated with precision, avoids ambiguity, and frames the debate effectively by distinguishing between *basing* (the relation between a mental state",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,7,7,6,7,38,2026-02-05T20:25:34.272176,17223,20852,,
+Jenkin-EpistemicRoleCore-2020,"### The Necessity of Conscious Awareness for Epistemic Basing: A Critical Analysis
+
+#### **Introduction**  
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically *based* on those reasons has profound implications for epistemology, philosophy of mind, and cognitive science. Proponents of internalist theories often argue that awareness is indispensable for justification, as it enables error detection, sensitivity to defeaters, and reflective end",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T20:25:34.272176,15377,14791,,
