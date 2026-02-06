@@ -74,3 +74,4 @@ B definitely has access to the rubric because it literally says it.
 ok for this one let's look at two no rubric in prompt ones.
 
 
+Got it right again for both with rubrics 

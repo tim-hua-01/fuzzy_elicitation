@@ -31,15 +31,7 @@ load_dotenv()
 
 MAX_CONCURRENT = 25
 
-COMPARISON_PROMPT_TEMPLATE = """You are an expert philosophy evaluator. You will be shown a philosophical question and two responses to that question. Your task is to judge which response is the better argued philosophical response.
-
-Consider factors like:
-- Clarity and precision of the thesis
-- Soundness of the argumentation and logical structure
-- Engagement with counterarguments and alternative positions
-- Quality and relevance of examples used
-- Precision in philosophical distinctions
-- Overall philosophical depth and insight
+COMPARISON_PROMPT_TEMPLATE = """You are an expert philosophy evaluator. You will be shown a philosophical question and two responses to that question. Your task is to judge which response is the better holistically.
 
 ## Question
 
@@ -232,6 +224,9 @@ def find_pairs(
     return selected, weights
 
 
+MAX_RETRIES = 3
+
+
 async def compare_pair(
     semaphore: asyncio.Semaphore,
     client: AsyncAnthropic,
@@ -239,8 +234,8 @@ async def compare_pair(
     response_a: str,
     response_b: str,
     reasoning_budget: int,
-) -> dict:
-    """Ask Claude to compare two responses. Returns parsed JSON judgment."""
+) -> dict | None:
+    """Ask Claude to compare two responses. Returns parsed JSON judgment, or None on failure."""
     prompt = COMPARISON_PROMPT_TEMPLATE.format(
         question=question,
         response_a=response_a,
@@ -260,30 +255,39 @@ async def compare_pair(
             "budget_tokens": reasoning_budget,
         }
 
-    async with semaphore:
-        response = await client.messages.create(**create_params)
+    for attempt in range(MAX_RETRIES):
+        try:
+            async with semaphore:
+                response = await client.messages.create(**create_params)
 
-    content_text = ""
-    thinking_text: str | None = None
-    for block in response.content:
-        if block.type == "text":
-            content_text += block.text
-        elif block.type == "thinking":
-            thinking_text = block.thinking
+            content_text = ""
+            thinking_text: str | None = None
+            for block in response.content:
+                if block.type == "text":
+                    content_text += block.text
+                elif block.type == "thinking":
+                    thinking_text = block.thinking
 
-    # Parse JSON response
-    text = content_text.strip()
-    try:
-        result = json.loads(text)
-    except json.JSONDecodeError:
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0]
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0]
-        result = json.loads(text.strip())
+            # Parse JSON response
+            text = content_text.strip()
+            try:
+                result = json.loads(text, strict=False)
+            except json.JSONDecodeError:
+                if "```json" in text:
+                    text = text.split("```json")[1].split("```")[0]
+                elif "```" in text:
+                    text = text.split("```")[1].split("```")[0]
+                result = json.loads(text.strip(), strict=False)
 
-    result["reasoning"] = thinking_text
-    return result
+            result["reasoning"] = thinking_text
+            return result
+
+        except Exception as e:
+            if attempt < MAX_RETRIES - 1:
+                print(f"  [retry {attempt+1}/{MAX_RETRIES}] compare_pair failed: {e}")
+            else:
+                print(f"  [FAILED after {MAX_RETRIES} attempts] compare_pair: {e}")
+                return None
 
 
 async def run_comparisons(
@@ -329,9 +333,15 @@ async def run_comparisons(
 
     # Process results into CSV rows — one row per pair
     rows: list[dict] = []
+    n_skipped = 0
     for pair_idx, ((low, high), weight) in enumerate(zip(pairs, weights)):
         result_low_first = results[pair_idx * 2]      # A=low, B=high
         result_high_first = results[pair_idx * 2 + 1]  # A=high, B=low
+
+        # Skip pairs where either comparison failed
+        if result_low_first is None or result_high_first is None:
+            n_skipped += 1
+            continue
 
         # Order 1: A=low, B=high -> winner "B" means high won
         picked_high_lowfirst = result_low_first["winner"] == "B"
@@ -368,6 +378,9 @@ async def run_comparisons(
             "reasoning_highfirst": result_high_first.get("reasoning", ""),
             "timestamp": datetime.now().isoformat(),
         })
+
+    if n_skipped:
+        print(f"\nWarning: {n_skipped}/{len(pairs)} pairs skipped due to failed API calls.")
 
     # Write CSV
     fieldnames = [
