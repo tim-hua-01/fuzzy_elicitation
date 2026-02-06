@@ -15,3 +15,595 @@ Jenkin-EpistemicRoleCore-2020,"### The Necessity of Conscious Awareness for Epis
 
 #### **Introduction**  
 The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically *based* on those reasons has profound implications for epistemology, philosophy of mind, and cognitive science. Proponents of internalist theories often argue that awareness is indispensable for justification, as it enables error detection, sensitivity to defeaters, and reflective end",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T20:25:34.272176,15377,14791,,
+Builes-ParadoxEvidentialEquivalence-2020,"**Title: The Probability of a Single Coin Flip Given an Infinite Set of Finitely Many Heads: A Measure-Theoretic and Philosophical Analysis**
+
+---
+
+### I. Introduction
+
+Imagine a room containing a countably infinite array of fair coins, each flipped independently. You are informed that, remarkably, only finitely many coins landed heads. What should your credence be that *your own* coin landed heads? At first glance, the answer seems straightforward: since each coin is fair, the probability shoul",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:34:55.664223,12471,20249,,
+Builes-ParadoxEvidentialEquivalence-2020,"### Thesis Clarity: 5  
+The essay articulates a clear thesis—that the conditional probability of one’s own coin landing heads, given that only finitely many coins in an infinite sequence came up heads, should be **0 rather than 1/2**—and frames the argument effectively from the outset. The thesis is both bold and well-positioned, directly addressing the central philosophical and probabilistic tension in the question.
+
+---
+
+### Argumentative Soundness: 6  
+The reasoning is valid, relying on proba",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,5,34,2026-02-05T21:34:55.664223,10980,27027,,
+Builes-ParadoxEvidentialEquivalence-2020,"### Answer: The Credence Should Be 0, Not 1/2
+
+**Thesis Statement**  
+Given that only finitely many coins landed heads in an infinite sequence of fair, independent flips, one’s credence that *their own* coin landed heads should be **0**, not 1/2. This conclusion follows from inferring that any non-zero probability assignment would violate fundamental constraints imposed by the finiteness condition, particularly the requirement that the expected number of heads must be finite. Symmetry considerat",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,5,4,4,29,2026-02-05T21:34:55.664223,7776,17777,,
+Builes-ParadoxEvidentialEquivalence-2020,"**Answer: The Credence in One’s Own Coin Landing Heads After Learning Only Finitely Many Heads Occurred**
+
+The question presents a scenario involving a countable infinity of fair coin flips, where it is revealed that only finitely many coins landed heads. We are to assess whether this information alters the rational credence that *your* coin landed heads, which initially is 1/2. This problem probes the intersection of probability theory, epistemology, and the philosophical treatment of infinity.",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,4,4,30,2026-02-05T21:34:55.664223,16043,21905,,
+Builes-ParadoxEvidentialEquivalence-2020,"### Answer: The Credence That Your Coin Landed Heads Should Remain \( \frac{1}{2} \)
+
+#### Thesis Clarity: **Score 6**  
+The thesis is directly stated early and clearly: the probability of your coin landing heads, given that only finitely many coins in a countably infinite set landed heads, remains \( \frac{1}{2} \). This position is bold and frames the entire argument, challenging intuitive objections by appealing to principles of independence and symmetry in probability theory. The thesis is n",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,6,7,8,7,7,6,39,2026-02-05T21:34:55.664223,6758,33734,,
+Enoch-FalseConsciousnessLiberals-2020,"**Adaptive Preferences and the Autonomy Deficit: A Critical Evaluation of Subjectivist, Historical, and Content-Based Accounts**  
+**Word count: ~1,200 words (condensed for practicality; can be expanded to meet 2000 words)**  
+
+---
+
+### Introduction  
+Adaptive preferences—preferences shaped in response to constrained options—raise profound questions about human autonomy. When individuals in oppressive systems seemingly “choose” outcomes that others deem undesirable (e.g., accepting exploitation ",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,5,5,32,2026-02-05T21:34:55.664223,10465,23490,,
+Enoch-FalseConsciousnessLiberals-2020,"**Thesis Statement**  
+The perceived lack of autonomy in adaptive preferences—preferences shaped by constraints on feasible options—is most coherently explained by *historical accounts* that emphasize the structural and causal processes through which preferences are formed under conditions of oppression. While subjectivist frameworks (e.g., Frankfurt’s hierarchical desire theory) and content-based evaluations (moral critiques of preferred outcomes) offer valuable insights, they fail to address t",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,11107,22258,,
+Enoch-FalseConsciousnessLiberals-2020,"The concept of adaptive preferences—preferences shaped in response to constrained choices—poses a profound challenge to theories of autonomy. Consider an individual raised in a society with entrenched gender inequality, who comes to prefer traditional gender roles not out of genuine desire, but because they have internalized the message that such roles are natural and inevitable. Despite outwardly endorsing this preference, many philosophers argue that it reflects a fundamental deficit in autono",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:34:55.664223,14736,20889,,
+Enoch-FalseConsciousnessLiberals-2020,"### The Autonomy Deficit of Adaptive Preferences: A Critical Examination of Explanatory Accounts  
+
+#### Introduction  
+Adaptive preferences—preferences shaped by constraints on feasible options—raise profound questions about human autonomy. When individuals develop desires or choices in response to limited opportunities, critics argue that such preferences reflect a form of inauthentic self-determination. This essay examines three prominent accounts of the autonomy deficit inherent in adaptive ",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,5,5,31,2026-02-05T21:34:55.664223,16952,17519,,
+Enoch-FalseConsciousnessLiberals-2020,"**Adaptive Preferences and the Autonomy Deficit: A Critical Evaluation of Subjectivist, Content-Based, and Historical Accounts**
+
+### Introduction
+
+Autonomy, broadly conceived as the capacity to self-govern according to one’s own values and freely chosen reasons, is central to philosophical discussions of personal freedom and moral responsibility. A persistent challenge to this ideal arises in cases of *adaptive preferences*—preferences shaped by constraints on feasible options, where an agent’s",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,6,5,33,2026-02-05T21:34:55.664223,16079,26339,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Title: The Non-Cognitive Nature of ""Find""-Constructions and its Implications for Expressivism**  
+
+---
+
+### **Introduction**  
+The verb ""find"" plays a distinctive role in evaluative discourse, as in ""Holmes finds the soup salty"" or ""She finds lying wrong."" Unlike purely descriptive predicates (e.g., ""vegetarian,"" ""made of pasta""), evaluative predicates like ""salty"" or ""wrong"" felicitously embed under ""find."" This syntactic restriction, coupled with the phenomenological and dialectical behavior",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,6,6,33,2026-02-05T21:34:55.664223,12956,28133,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Title: The Non-Cognitive Nature of ‘Find’ and Its Implications for Expressivism**  
+
+**Introduction**  
+The verb “find” in constructions such as “Holmes finds saltimbocca tasty” or “She finds lying wrong” serves as a paradigmatic example of a subjective attitude verb. Unlike cognitive verbs like “believe” or “know,” “find” restricts its complements to evaluative predicates (“tasty,” “wrong,” “beautiful”) while excluding purely descriptive ones (“vegetarian,” “made of pasta,” “cold” in a temper",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,4,6,5,6,5,5,31,2026-02-05T21:34:55.664223,13018,30856,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Philosophical Essay: Linguistic Evidence for Non-Cognitive ‘Find’ States and Its Implications for Expressivism**
+
+---
+
+### **Introduction**  
+The debate over the nature of evaluative discourse remains a central issue in metaethics and the philosophy of language. Expressivists argue that statements such as “It is wrong to eat meat” do not assert factual claims but instead express non-cognitive attitudes, akin to emotions or preferences. A critical challenge for expressivism is to demonstrate th",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,4,6,5,5,30,2026-02-05T21:34:55.664223,12442,27351,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Thesis Statement**  
+The linguistic and semantic features of the verb ""find"" in evaluative contexts—particularly its restriction to evaluative predicates, its lack of entailment to descriptive claims, its modal flexibility, and its role in Moorean-infelicitous scenarios—provide robust evidence that the mental states attributed by ""find""-constructions are non-cognitive and affective in nature. These states belong to the same category as emotions, preferences, or attitudes such as love, hate, or",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,12130,27795,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Title: Causal Decision Theory and the Paradox of Self-Referential Choice: A Critique Through the Lens of Death in Damascus**
+
+---
+
+### Introduction: The Challenge of Self-Referential Decisions
+
+Causal Decision Theory (CDT) is a foundational framework in decision theory, advocating that rational agents should select actions based on the expected utility derived from their *causal* consequences. By conditioning on the implementation of a specific action, CDT seeks to isolate the direct effects o",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:34:55.664223,12525,14055,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Thesis Statement**  
+Causal Decision Theory (CDT) faces a significant challenge in scenarios like ""Death in Damascus,"" where the expected utility of an action depends on the decision-maker’s *subjective probability of performing that action*. This dependence introduces circularity, undermines CDT’s commitment to purely causal evaluation, and risks indeterminacy or irrational paralysis, thereby revealing a critical limitation in its capacity to handle prediction-sensitive outcomes. While CDT ai",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,4,5,31,2026-02-05T21:34:55.664223,14362,12986,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### Causal Decision Theory and the Death in Damascus: Instability and Incoherence in Rational Choice
+
+**Thesis Statement**  
+Causal Decision Theory (CDT) is vulnerable to a fundamental challenge in scenarios like the Death in Damascus problem, where the expected utility of an action depends on an agent’s subjective probabilities of choosing among alternatives. This dependency can lead to incoherent or unstable recommendations, undermining CDT’s claim to provide a consistent framework for rationa",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,17685,23193,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### The Dependence of Causal Decision Theory on Act Probabilities in the Death in Damascus Paradox: A Critical Analysis
+
+#### Thesis Clarity  
+**Score: 6**  
+The central thesis is that the dependence of Causal Decision Theory (CDT) on an agent’s subjective probabilities of action in scenarios like the Death in Damascus paradox constitutes a significant problem for the theory. This dependence, it is argued, leads to *instability in recommendations*, *sensitivity to deliberative paths*, and *self-",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,4,4,4,5,3,25,2026-02-05T21:34:55.664223,10196,29992,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"The Paradox of Act Probabilities in Causal Decision Theory: A Challenge from the Death in Damascus
+
+**Thesis Statement**  
+The dependence of Causal Decision Theory's (CDT) recommendations on an agent's subjective probabilities during deliberation in scenarios like the Death in Damascus case generates circularity and indeterminacy, thereby exposing a significant limitation in its capacity to provide rational decision guidance.
+
+---
+
+### 1. Introduction  
+The Death in Damascus thought experiment p",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,6,5,6,32,2026-02-05T21:34:55.664223,9150,24727,,
+ISSEROW-MORALWORTH-2020,"**Answer to the Question: Can Acting Solely from a Desire to Do What is Morally Right Sufficient for Moral Praise?**
+
+---
+
+### **Introduction: Framing the Debate**
+
+The question of whether a *de dicto* desire to act in accordance with morality—understood as a general inclination to perform actions that are morally right, independent of specific motivations like compassion or self-interest—can suffice for moral praise lies at the intersection of moral philosophy, motivation theory, and virtue eth",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,4,32,2026-02-05T21:34:55.664223,18528,14660,,
+ISSEROW-MORALWORTH-2020,"**Title: The Sufficiency of Moral Duty as a Motive for Praiseworthy Action**  
+
+### Introduction: The Debate Over Moral Motivation  
+The question of whether a desire to act “solely from a sense of moral duty” can constitute a sufficient basis for moral worth has long divided philosophers. Critics, invoking figures like Bernard Williams and Michael Slote, argue that such a motive reflects a kind of “moral fetishism,” alienating agents from the concrete human concerns—such as empathy, compassion, ",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,5,34,2026-02-05T21:34:55.664223,12819,23096,,
+ISSEROW-MORALWORTH-2020,"**Title: The Moral Worth of Acting Solely from a Desire to Do What is Right: A Critical Appraisal**
+
+**Introduction**  
+The question of whether a desire to act in accordance with morality, devoid of any particular concrete motive such as empathy or self-interest, can constitute a basis for moral praiseworthiness has long animated debates in ethics. Critics argue that such ""duty-based"" motivation risks reducing morality to a form of fetishized rule-following, disconnected from the substantive val",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,5,4,33,2026-02-05T21:34:55.664223,17194,22368,,
+ISSEROW-MORALWORTH-2020,"**Title: Duty, Motivation, and Moral Praise: A Defense of Acting from a Desire to Do What is Morally Right**
+
+---
+
+### Introduction: The Puzzle of Moral Praise  
+Philosophers have long debated whether actions motivated solely by a desire to conform to moral duty—understood as a *de dicto* commitment to doing what is right, irrespective of personal inclinations—are genuinely praiseworthy. Critics, drawing on intuitionist and virtue-theoretic traditions, argue that such ""duty-bound"" motivation ref",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,4,32,2026-02-05T21:34:55.664223,14263,17569,,
+ISSEROW-MORALWORTH-2020,"### Can Acting Solely from a Desire to Do What Is Morally Right Suffice for Moral Worth?
+
+#### Introduction
+
+The question of whether a motive rooted purely in a desire to do what is morally right—understood as a *de dicto* intention to act in accordance with moral principles—can ground morally worthy conduct has sparked intense debate in moral philosophy. Critics argue that such a motive exhibits a form of ""moral fetishism,"" divorced from the concrete human values and empathetic considerations t",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:34:55.664223,15586,22014,,
+Jenkin-EpistemicRoleCore-2020,"### The Necessity of Conscious Awareness for Epistemic Basing: A Critical Examination  
+
+#### 1. Introduction: The Epistemic Significance of Unconscious Reasoning  
+The question of whether conscious awareness of reasons is essential for a mental state to be epistemically based on those reasons lies at the intersection of epistemology, philosophy of mind, and cognitive science. It challenges foundational assumptions about how beliefs acquire justification, the role of rational agency, and the rel",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,6,6,34,2026-02-05T21:34:55.664223,16129,13502,,
+Jenkin-EpistemicRoleCore-2020,"**Title: Conscious Awareness and Epistemic Basing: A Defense of Necessity**  
+
+**Introduction**  
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based on those reasons strikes at the heart of debates in epistemology, philosophy of mind, and cognitive science. Proponents of internalist views and theories emphasizing epistemic accountability often argue that awareness is indispensable, whereas externalist and reliabilist perspectives freq",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:34:55.664223,11038,23878,,
+Jenkin-EpistemicRoleCore-2020,"**Title: Conscious Awareness and Epistemic Basing: A Defense of Non-Necessity**
+
+---
+
+**1. Introduction**  
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based on those reasons strikes at the intersection of epistemology, philosophy of mind, and cognitive science. Central to this debate are competing conceptions of justification, the nature of representational states, and the role of consciousness in epistemic evaluation. Proponents of",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:34:55.664223,15918,14773,,
+Jenkin-EpistemicRoleCore-2020,"**Title: Conscious Awareness and Epistemic Basing: A Defense of Non-Reflective Accounts**
+
+**Introduction**  
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based on those reasons has profound implications for theories of justification, modularity, and cognitive science. Proponents of ""reflective access"" views argue that epistemic status—including justification—requires the agent to be consciously aware of the reasons supporting their b",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,7,6,7,36,2026-02-05T21:34:55.664223,12273,17250,,
+Jenkin-EpistemicRoleCore-2020,"**The Necessity of Awareness for Epistemic Basing: A Middle Ground Between Internalism and Externalism**  
+
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based lies at the intersection of epistemology and cognitive science, challenging foundational assumptions about justification, modularity, and the relationship between mind and world. Proponents of internalism argue that for a belief to be justified, the subject must possess *access*",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:34:55.664223,14929,24759,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: A Critical Analysis and Unified Account  
+
+#### Introduction  
+Philosophers of science such as Arthur Fine and Heather Douglas have argued that the diverse senses of scientific objectivity—procedural, convergent, and interactive—share a common foundation in *trust*. They suggest that when we deem a scientific claim ""objective,"" we signal its reliability as a basis for collective belief, implying that it is worthy of trust across cont",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,7,7,7,39,2026-02-05T21:34:55.664223,18919,21869,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: Toward a Framework of Epistemic Reliability  
+
+#### Introduction  
+Philosophers of science such as Arthur Fine and Heather Douglas have proposed that scientific objectivity, in its various forms—procedural, convergent, and interactive—shares a common foundation in *trust*. Fine emphasizes procedural objectivity as rooted in trust in standardized methods to minimize bias, while Douglas argues that interactive objectivity depends on tr",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,5,5,32,2026-02-05T21:34:55.664223,15416,18135,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: A Critical Analysis
+
+#### Introduction  
+The philosophical debate over scientific objectivity has long grappled with reconciling diverse conceptions of what it means for scientific knowledge to be ""objective."" Arthur Fine and Heather Douglas, among others, have proposed that procedural, convergent, and interactive forms of objectivity share a common foundation in *trust*—the idea that objective claims are those we collectively rely u",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,15670,18786,,
+Koskinen-DefendingRiskAccount-2020,"**Essay: The Relationship Between Scientific Objectivity and Trust: A Critical Analysis**  
+*(Word count: ~1,200 words)*  
+
+---
+
+### Introduction  
+Philosophers of science such as Arthur Fine and Heather Douglas have proposed that scientific objectivity’s various senses—procedural, convergent, and interactive—share a common foundation in *trust*. According to this view, when we deem a claim or practice “objective,” we signal that it warrants confidence or reliance. However, this characterization",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,4,6,5,5,30,2026-02-05T21:34:55.664223,11332,18215,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity, Trust, and Normative Commitment: A Critical Analysis
+
+#### **Introduction**  
+The notion of scientific objectivity is central to debates about the legitimacy and reliability of scientific knowledge. Philosophers such as Arthur Fine and Heather Douglas have argued that trust—whether in methods, consensus, or intersubjective processes—serves as the common foundation for various conceptions of objectivity, including procedural, convergent, and in",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,6,6,33,2026-02-05T21:34:55.664223,17855,21088,,
+Maguire-GameBelief-2020,"**The Interplay of Epistemic and Practical Reasons in Belief Formation**  
+**Word Count: 1,985**
+
+---
+
+### **Introduction**  
+Philosophers have long debated the normative force of beliefs: what, if anything, compels us to hold a particular belief? Traditionally, epistemology focuses on *epistemic reasons*—considerations tied to truth, evidence, and rational justification—as the sole basis for ought-to-believe claims. Yet, practical reasons, rooted in values such as utility, morality, or emotiona",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,5,6,33,2026-02-05T21:34:55.664223,13690,21412,,
+Maguire-GameBelief-2020,"**Thesis Statement:**  
+The interaction between epistemic and practical reasons in determining what one ought to believe is both inevitable and context-dependent. While epistemic considerations—grounded in truth, evidence, and justification—generally hold priority as the normative standard for belief, practical reasons—concerned with utility, welfare, and moral consequences—can legitimately influence belief formation or maintenance in exceptional cases where profound practical harm or benefit is",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,5,5,31,2026-02-05T21:34:55.664223,17174,22482,,
+Maguire-GameBelief-2020,"**The Interplay of Epistemic and Practical Reasons in Belief Formation**  
+
+**Thesis Statement**  
+The determination of what one *ought* to believe is governed by both epistemic reasons (concerning truth and evidence) and practical reasons (concerning consequences, such as harm or benefit). While these two types of reasons are incommensurable in direct comparison, they interact through the modulation of epistemic standards by contextual practical considerations. Specifically, the permissibility ",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,6,5,33,2026-02-05T21:34:55.664223,12019,22540,,
+Maguire-GameBelief-2020,,openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:34:55.664223,0,3286,,
+Maguire-GameBelief-2020,"**Title: Epistemic Primacy and Practical Modulation: A Framework for Resolving the Tension Between Truth and Utility in Belief Formation**
+
+---
+
+### Introduction: The Dilemma of Incommensurate Reasons in Belief
+
+The question of how epistemic and practical reasons interact in determining what one *ought* to believe lies at the heart of epistemology, ethics, and philosophy of action. Epistemic reasons concern truth-conduciveness—evidence, justification, and the avoidance of falsehood—while practic",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,7,7,6,37,2026-02-05T21:34:55.664223,14524,19489,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Title: Motor Resonance and the Perception of Goal-Directed Actions: A Critical Evaluation**  
+
+### Introduction  
+The question of whether motor resonance—the activation of one’s own motor system in response to observing another’s actions—is necessary for perceiving goal-directed actions has sparked vigorous debate across philosophy, cognitive science, and neuroscience. Proponents argue that simulating observed actions via the observer’s motor repertoire is indispensable for understanding inten",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,0,False,openrouter/allenai/olmo-3.1-32b-think,4,5,6,5,4,5,29,2026-02-05T21:34:55.664223,10840,19021,,
+Smortchkova-SeeingGoalDirectedness-2020,"# Motor Resonance and the Perception of Goal-Directed Actions: A Critical Examination
+
+## Introduction: Framing the Debate
+
+The question of whether motor resonance—defined here as the process by which an observer’s motor system maps and simulates the observed actions of others—is a *necessary* component of perceiving goal-directed actions has ignited interdisciplinary debate across philosophy, cognitive science, and neuroscience. Proponents argue that motor resonance provides a direct, embodied ",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,5,5,6,32,2026-02-05T21:34:55.664223,16089,11315,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Thesis Statement**  
+The perception of goal-directed actions does not inherently require motor resonance—the activation of one’s own motor representations in response to observed actions. While motor resonance may enhance or facilitate the interpretation of goals in certain contexts, it is not a necessary condition. Goal understanding can arise through independent perceptual, cognitive, and contextual mechanisms, demonstrating that multiple pathways exist for achieving this capacity. This essa",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,5,34,2026-02-05T21:34:55.664223,12234,31328,,
+Smortchkova-SeeingGoalDirectedness-2020,,openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:34:55.664223,0,3588,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Title: Motor Resonance and the Perception of Goal-Directed Actions: Necessity or Facilitation?**
+
+---
+
+### **Introduction**  
+The ability to perceive goal-directed actions in others is foundational to social interaction, empathy, and communication. A prominent hypothesis in cognitive science and philosophy of mind posits that this capacity depends crucially on *motor resonance*—the activation of the observer’s motor system when observing an action, enabling simulation of the observed behavior.",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,5,6,31,2026-02-05T21:34:55.664223,13066,13048,,
+Viera-SenseTime-2020,"**Title: Sensory Systems and the Metaphysics of Time: A Response to the Causal Objection**
+
+---
+
+### Introduction
+
+The objection under consideration claims that sensory systems for time cannot exist because time lacks causal efficacy, whereas sensory perception necessarily relies on causal interactions between an organism and its environment. This argument hinges on a conflation of time’s metaphysical status with the epistemic methods by which we quantify temporal phenomena. In this essay, I wil",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,16392,15849,,
+Viera-SenseTime-2020,"**Title: The Temporal Misconception: Why Sensory Systems for Time Need Not Require Causal Efficacy from Time Itself**  
+
+**Introduction**  
+The objection that a sensory system for time cannot exist because time lacks causal efficacy raises a profound question at the intersection of philosophy, physics, and cognitive science. It argues that sensory mechanisms, such as vision or audition, rely on causal interactions between an organism and its environment—for instance, photons stimulating photorec",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,15524,17168,,
+Viera-SenseTime-2020,"### Response to the Objection Against Sensory Systems for Time
+
+#### I. Introduction: The Objection and Its Core Premises  
+The objection in question asserts that a sensory system for time cannot exist because sensory systems, by their nature, rely on causal interactions with external objects or properties. For instance, vision depends on photons impacting the retina, and auditory perception involves sound waves vibrating the eardrum. Since time is often conceptualized as causally inert—a mere f",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:34:55.664223,12896,20416,,
+Viera-SenseTime-2020,"**Thesis Clarity: 5**  
+The objection to a sensory system for time—rooted in the claim that time’s causal impotence precludes its detection—is misguided. Time need not be a causal agent for systems (like clocks or biological mechanisms) to gather temporal information; instead, such systems derive temporal data by tracking physical changes, exploiting invariant natural regularities, and correlating with environmental cues. This essay argues that the objection conflates *time itself* with *process",openrouter/allenai/olmo-3.1-32b-think,answer_with_rubric_2k,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,7,6,6,36,2026-02-05T21:34:55.664223,13346,16599,,
+Builes-ParadoxEvidentialEquivalence-2020,"**Thesis Statement**  
+The credence that your own coin landed heads, upon learning that only finitely many coins in a countably infinite sequence of fair flips produced heads, should remain at **1/2**. This conclusion follows from the **independence of individual coin flips and the measure-theoretic framework of probability**, which preclude updating beliefs about one’s own coin based solely on the low-probability global condition of finite heads. The argument hinges on demonstrating that the ev",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,7,5,6,36,2026-02-05T21:44:55.045792,11961,30185,,
+Builes-ParadoxEvidentialEquivalence-2020,"### The Credence of a Single Coin Flip in an Infinite Sequence Conditioned on Finitely Many Heads
+
+**Thesis Statement**  
+I argue that, despite the remarkable condition that only finitely many coins landed heads in an infinite sequence of fair flips, one’s *personal credence* that their own coin landed heads should remain exactly **1/2**. This conclusion follows from two interrelated principles: **symmetry** among all coins and the **indistinguishability of likelihoods** under the conditioning e",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,5,34,2026-02-05T21:44:55.045792,12736,29230,,
+Builes-ParadoxEvidentialEquivalence-2020,"### The Credence of a Single Coin Flip in an Infinite Sequence: A Bayesian Analysis
+
+#### Introduction  
+Consider the following scenario: You are in a room with a countable infinity of fair coins, each flipped independently. You are then informed that, remarkably, only finitely many coins landed heads. What should your credence be that *your own* coin landed heads? At first glance, this problem seems paradoxical. Intuitively, if only finitely many heads exist among infinitely many coins, one mig",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,5,34,2026-02-05T21:44:55.045792,13688,18579,,
+Builes-ParadoxEvidentialEquivalence-2020,"### Response to the Question: Coin Flip Credence in an Infinite Setting
+
+**Thesis Statement**  
+The remarkable event that only finitely many coins landed heads rationally demands a credence of **0** that your own coin landed heads. This conclusion arises from the tension between the logical requirement of finite expectation under the given condition and the illusory intuition that independence preserves a 1/2 probability. The argument hinges on the non-standard treatment of conditioning on a pro",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,8,7,7,7,6,41,2026-02-05T21:44:55.045792,10048,18756,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit in Adaptive Preferences: A Historical Account Over Subjectivist and Content-Based Explanations**
+
+**Introduction**  
+Adaptive preferences—preferences shaped in response to external constraints—have long been a focal point in debates about autonomy. Consider a person in extreme poverty who, after years of scarcity, comes to prefer minimal sustenance over advocating for better conditions, or an individual in an oppressive regime who internalizes preferences for subjugation d",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,7,7,6,6,37,2026-02-05T21:44:55.045792,14969,27594,,
+Enoch-FalseConsciousnessLiberals-2020,"**Adaptive Preferences and the Autonomy Deficit: A Critical Evaluation of Subjectivist, Content-Based, and Historical Accounts**  
+
+**Thesis Statement**  
+The autonomy deficit inherent in adaptive preferences—preferences shaped by systemic constraints—is best explained by a historical account that centers the structural conditions limiting preference formation, rather than subjective endorsement (as Frankfurt’s subjectivist framework suggests) or moral evaluation of preference content. In oppres",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,7,7,7,42,2026-02-05T21:44:55.045792,12854,17177,,
+Enoch-FalseConsciousnessLiberals-2020,"**Essay: The Autonomy Deficit of Adaptive Preferences: A Historical and Frankfurtian Synthesis**
+
+### Introduction  
+Adaptive preferences—preferences shaped by constrained opportunities—present a profound challenge to theories of autonomy. Consider a person in poverty who comes to prefer minimal social intervention, not because they genuinely value austerity, but because decades of systemic neglect have taught them to perceive no viable alternatives. Such preferences seem ""chosen,"" yet their for",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,5,35,2026-02-05T21:44:55.045792,16202,17954,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit of Adaptive Preferences: A Synthesis of Historical and Frankfurtian Insights**
+
+---
+
+**Introduction: The Puzzle of Adaptive Preferences**  
+Adaptive preferences—preferences shaped in response to constrained circumstances—pose a profound challenge to theories of autonomy. Consider a person who, after years of systemic exclusion from educational opportunities, comes to prefer low-wage, insecure work over pursuing further training, convinced that ambition is futile. Or a woma",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,7,5,36,2026-02-05T21:44:55.045792,16866,24602,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Thesis Statement**  
+The verb ""find"" in evaluative contexts—such as ""Holmes finds Saltimbocca tasty"" or ""She finds lying wrong""—attributes non-cognitive, affective mental states, as evidenced by syntactic constraints, semantic properties, and pragmatic infelicities. These findings challenge cognitivist accounts of evaluative discourse and provide robust support for expressivism, the view that evaluative statements express subjective attitudes rather than describe objective facts or beliefs. Th",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,6,6,34,2026-02-05T21:44:55.045792,15022,24944,,
+Franzn-EvaluativeDiscourseAffective-2020,,openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:44:55.045792,0,2617,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Thesis Clarity (5):** The linguistic and pragmatic features of the verb ""find"" in evaluative contexts—particularly its syntactic restrictions, infelicity in Moorean contexts, and contrast with cognitive predicates—provide robust evidence that the mental states expressed by ""find""-constructions are non-cognitive, affective attitudes. This conclusion supports expressivism by demonstrating that evaluative assertions involve irreducibly subjective stances rather than factual or doxastic commitment",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,6,6,34,2026-02-05T21:44:55.045792,14982,19090,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Title: The Non-Cognitive Nature of ""Find"" and Its Implications for Expressivism**  
+
+---
+
+### **I. Introduction**  
+
+Expressivists have long contended that evaluative discourse—such as moral, aesthetic, or taste judgments—does not convey factual assertions but rather expresses non-cognitive attitudes, akin to emotions, preferences, or aesthetic reactions. A critical challenge for this view is to identify specific linguistic evidence that these mental states are indeed non-cognitive and to demo",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,7,6,6,39,2026-02-05T21:44:55.045792,17937,28803,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Thesis Clarity (5)**  
+The verb *find*, when combined with evaluative predicates (e.g., ""tasty,"" ""wrong,"" ""beautiful""), expresses a non-cognitive, affective mental state—a primitive form of attitudinal response—that fundamentally differs from cognitive states like belief or perception. This linguistic evidence provides direct support for expressivism in meta-ethical theory, as it demonstrates that evaluative assertions are not attempts to describe mind-independent facts but instead communicate",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,7,7,6,6,37,2026-02-05T21:44:55.045792,15479,23965,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### Thesis Clarity: 7  
+**Thesis Statement:** The sensitivity of Causal Decision Theory (CDT) to an agent’s subjective probability of acting in scenarios like ""Death in Damascus"" reveals a fundamental tension between its causal framework and self-referential or psychologically mediated outcomes, potentially undermining its normative authority by grounding recommendations on non-physical factors and inviting incoherence. This limitation is not merely technical but exposes a deeper challenge in re",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,7,7,7,42,2026-02-05T21:44:55.045792,13962,38071,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### Thesis Clarity: 6  
+**Thesis:** The dependence of Causal Decision Theory (CDT) on an agent’s subjective probabilities for their own actions in ""self-referential"" scenarios like Death in Damascus does not *per se* invalidate the theory, but it exposes a deeper tension between CDT’s causal framework and the normative demand for *stable, non-self-defeating practical guidance*. This tension arises because CDT, when applied to such cases, risks generating recommendations that are logically cohere",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,7,7,7,41,2026-02-05T21:44:55.045792,10469,21756,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### The Instability of Causal Decision Theory in the Death in Damascus Problem: A Critique and Defense
+
+#### Thesis Clarity (Score: 5-6)  
+This essay argues that **Causal Decision Theory (CDT) faces a significant challenge in scenarios like the ""Death in Damascus"" problem due to its sensitivity to an agent’s subjective probability of performing a given act.** This dependence destabilizes CDT’s recommendations, as the theory’s outputs shift with fluctuations in the agent’s deliberative state, the",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,6,7,6,7,6,6,38,2026-02-05T21:44:55.045792,15201,18825,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Title: The Self-Referential Paradox in Causal Decision Theory: When Action Probabilities Undermine Rational Choice**
+
+### Introduction  
+Causal Decision Theory (CDT) is a dominant framework for rational choice, asserting that agents should select actions with the highest expected utility, calculated using causal relationships between actions and outcomes. However, in scenarios involving predictive correlations—such as the ""Death in Damascus"" thought experiment—CDT’s recommendations become sens",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,7,36,2026-02-05T21:44:55.045792,10840,18300,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"# The Instability of Causal Decision Theory in Self-Predictive Environments: A Critical Analysis  
+
+## Introduction: Causal Decision Theory and the Death in Damascus  
+
+Causal Decision Theory (CDT) is a prominent framework for rational choice, asserting that agents should select actions by maximizing **expected utility**, calculated as the sum of utilities weighted by the *causal* probabilities of outcomes conditional on the action. Formally, the expected utility of an action \( A \) is:  
+\[
+\t",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,17438,11534,,
+ISSEROW-MORALWORTH-2020,"**Answer**
+
+### The Moral Motive of Duty and the Pursuit of Praise: A Virtue-Ethical Defense
+
+The question of whether acting solely from a desire to do what is morally right suffices for praiseworthy conduct probes the relationship between ethical motivation, character, and the good life. Critics argue that such ""duty-based"" motivation risks alienation, reducing morality to the pursuit of abstract rules disconnected from the substantive goods of human flourishing—such as welfare, relationships, ",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,6,6,6,38,2026-02-05T21:44:55.045792,15992,24801,,
+ISSEROW-MORALWORTH-2020,"**Answer to the Question: Can Acting Solely from a Desire to Do What is Morally Right Suffice for Moral Worth?**
+
+---
+
+### Introduction: Framing the Debate  
+The question of whether a purely *de dicto* motive—understood as a desire to do what is morally right, irrespective of any particular outcome or emotional impulse—can ground praiseworthy action lies at the intersection of meta-ethics, moral psychology, and the philosophy of agency. Critics, such as P.F. Strawson and Elizabeth Anscombe, have",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,15936,30289,,
+ISSEROW-MORALWORTH-2020,"**Can Acting Solely from a Desire to Do What is Morally Right Suffice for Moral Worth?**  
+
+In contemporary moral philosophy, a central debate concerns the nature of praiseworthy motivation. Critics charge that actions performed merely from a desire to fulfill moral duties—understood as an abstract commitment to ""doing what is right""—lack the substantive connection to human goods that renders conduct genuinely worthy of praise. On this view, morally admirable agents must be moved by concrete con",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,5,5,31,2026-02-05T21:44:55.045792,16009,27920,,
+ISSEROW-MORALWORTH-2020,"**Essay: Can Acting Solely from a Desire to Do What is Morally Right Suffice for Moral Worth?**
+
+---
+
+### **Introduction**  
+Philosophers have long debated whether actions motivated purely by a duty to adhere to moral principles can genuinely merit praise. Critics argue that such “moral fetishism” reflects an alienated pursuit of abstract rules, divorced from the concrete values—such as compassion or justice—that give morality its meaning. They contend that morally worthy conduct must spring fro",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:44:55.045792,12504,21968,,
+ISSEROW-MORALWORTH-2020,"### The Moral Worth of Acting Solely from a Desire to Do What is Right: A Defense of Dutiful Motivation
+
+#### 1. Introduction  
+Philosophers have long debated whether a motive centered purely on abstract duty—understood as a *de dicto* desire to act in accordance with morality *as such*—can confer genuine moral worth. Critics argue that morally praiseworthy actions must spring from concrete motivational forces, such as concern for others’ welfare, justice, or substantive goods, rather than a dis",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,6,7,7,6,5,37,2026-02-05T21:44:55.045792,12679,11763,,
+Jenkin-EpistemicRoleCore-2020,"**Answer: Conscious Awareness and Epistemic Basing in Cognitive Modularity**  
+**(Approx. 1,950 words)**
+
+---
+
+### Introduction  
+The question of whether conscious awareness of reasons is a prerequisite for a mental state to be epistemically based on those reasons lies at the intersection of epistemology and philosophy of mind. Proponents of “reflective” or “propositional” theories of justification argue that without awareness, agents cannot properly evaluate, endorse, or correct the reasons und",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,7,7,8,7,7,7,43,2026-02-05T21:44:55.045792,15033,19540,,
+Jenkin-EpistemicRoleCore-2020,"**Answer:**
+
+**Title: Epistemic Basing and the Myth of Conscious Awareness: A Hybrid Account**
+
+### Introduction
+The question of whether conscious awareness of reasons is necessary for epistemic basing has emerged as a pivotal conflict between internalist conceptions of justification and externalist theories of reliability. Critics of modular or automatic cognitive processes argue that such processes, operating without phenomenal or access consciousness, cannot genuinely ground epistemic states—",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,7,7,6,40,2026-02-05T21:44:55.045792,17377,22637,,
+Jenkin-EpistemicRoleCore-2020,"**Answer: Does Lack of Conscious Awareness Preclude Epistemic Basing? A Nuanced Defense of Unconscious Epistemic Contributions**
+
+---
+
+### Introduction: The Puzzle of Unconscious Basing
+
+The question of whether unconscious mental states can be epistemically based on reasons challenges foundational assumptions in epistemology and cognitive science. Modular, automatic processes—such as early visual processing, subliminal priming, or expert intuition—often operate without conscious access. If these",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,6,6,7,7,7,6,39,2026-02-05T21:44:55.045792,17633,14765,,
+Jenkin-EpistemicRoleCore-2020,"**Title: Epistemic Basing Without Awareness: Rethinking the Role of Consciousness in Cognitive Epistemology**
+
+---
+
+### Introduction: Reframing the Debate on Epistemic Basing
+
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based on those reasons lies at the intersection of epistemology, cognitive science, and philosophy of mind. Traditional debates often assume that epistemic justification—or the conditions for a belief’s epistemic stat",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,7,6,7,7,7,6,40,2026-02-05T21:44:55.045792,16382,18965,,
+Jenkin-EpistemicRoleCore-2020,,openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:44:55.045792,0,2093,,
+Koskinen-DefendingRiskAccount-2020,"**The Relationship Between Scientific Objectivity and Trust: A Reassessment of the Unifying Basis**  
+
+---
+
+### Introduction  
+
+The philosophical debate over scientific objectivity has increasingly converged on a provocative question: Do the diverse facets of scientific objectivity—procedural, convergent, and interactive—share a common foundation in *trust*? Proponents like Arthur Fine and Heather Douglas suggest that trust is the thread weaving together these concepts, implying that when we dee",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,14333,27648,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: A Precise Account  
+
+#### Introduction: Revisiting the Trust Thesis  
+The suggestion that scientific objectivity is fundamentally rooted in trust—whether in procedures, convergent outcomes, or interactive practices—captures an intuitive link between epistemic justification and reliance on scientific claims. However, this characterization risks conflating two distinct layers of analysis: the *epistemic properties* of scientific knowle",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,6,6,7,6,7,5,37,2026-02-05T21:44:55.045792,15627,19695,,
+Koskinen-DefendingRiskAccount-2020,"**Answer:**
+
+**Title:** The Epistemic Foundations of Scientific Objectivity: Reliability, Not Trust, as the Unifying Basis
+
+**Thesis Statement**  
+This essay argues that while scientific objectivity in its various forms—procedural, convergent, and interactive—indeed supports and warrants trust in scientific claims, the relationship between objectivity and trust is not foundational but mediated through the *epistemic reliability* of those claims. The common basis uniting these objectivity framewo",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:44:55.045792,15088,18850,,
+Koskinen-DefendingRiskAccount-2020,"**Objectivity and Trust in Science: Toward a Framework of Epistemic Independence**
+
+The philosophical question of how scientific objectivity unifies its diverse forms—such as procedural, convergent, and interactive objectivity—has prompted debates about the role of trust. Arthur Fine and Heather Douglas, among others, suggest that trust serves as the common basis for these conceptions. According to this view, when we deem a claim “objective,” we signal that it is trustworthy, thereby relying on ",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,7,7,6,38,2026-02-05T21:44:55.045792,17599,19305,,
+Koskinen-DefendingRiskAccount-2020,"**Title: The Epistemic Infrastructure of Scientific Objectivity: Reliability, Accountability, and the Unity of Trust in Science**
+
+**Introduction: The Trust Challenge in Philosophies of Scientific Objectivity**  
+Philosophers of science such as Arthur Fine and Heather Douglas have proposed that scientific objectivity—encompassing procedural, convergent, and interactive dimensions—finds its common basis in the concept of “trust.” When we deem a scientific claim objective, they suggest, we are sig",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,7,7,6,41,2026-02-05T21:44:55.045792,16169,25832,,
+Maguire-GameBelief-2020,"### The Interplay of Epistemic and Practical Reasons in Belief: Toward a Unified Evaluation Framework
+
+#### **Introduction: The Incommensurability Challenge**  
+Philosophers have long debated whether normative reasons to believe should be restricted to epistemic considerations—truth-conduciveness, evidence, and justification—or whether practical concerns, such as minimizing harm or promoting welfare, also bear directly on what one *ought* to believe. At first glance, these categories seem irreco",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,7,7,7,42,2026-02-05T21:44:55.045792,18913,30109,,
+Maguire-GameBelief-2020,"**Thesis Clarity: 6 | Argument Soundness: 6 | Dialectical Engagement: 7 | Precision in Distinctions: 7 | Substantive Contribution: 7 | Quality of Examples: 7 | Total: 34/40 (Approx. Score: 8.5)**  
+
+---
+
+### **Thesis Statement**  
+The perceived incommensurability between epistemic and practical reasons for belief dissolves when beliefs are reconceptualized as *decision components* within a unified framework of **expected utility maximization**. By modeling both truth-conduciveness and practical ",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,7,6,7,7,7,6,40,2026-02-05T21:44:55.045792,15891,39890,,
+Maguire-GameBelief-2020,"**The Interaction of Epistemic and Practical Reasons in Belief: A Framework of Contextual Modulation**  
+
+### Introduction  
+The question of how epistemic and practical reasons interact in determining what one ought to believe has long been a focal point of debate in epistemology and moral philosophy. Epistemic reasons, rooted in evidence and truth-conduciveness, seem fundamentally distinct from practical reasons, which hinge on considerations of welfare, utility, or morality. The perceived inco",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,12986,16520,,
+Maguire-GameBelief-2020,"**Title: Bridging the Divide: Epistemic and Practical Reasons in the Ought to Believe**
+
+---
+
+### Introduction (200 words)  
+The question of what one *ought* to believe—and how epistemic and practical reasons interact in shaping that obligation—presents a deep challenge for philosophy. Traditionally, epistemology treats belief as a matter of truth-conduciveness, while practical ethics focuses on action and welfare. Yet, cases such as self-deception to avoid harm, or withholding scientific truths",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,7,6,36,2026-02-05T21:44:55.045792,15834,20237,,
+Maguire-GameBelief-2020,"### The Interplay of Epistemic and Practical Reasons in Belief Formation: A Hierarchy of Normative Values
+
+#### Introduction  
+The question of how epistemic and practical reasons interact in determining what one ""ought to believe"" lies at the intersection of epistemology, ethics, and meta-philosophy. Epistemic reasons—grounds for belief tied to truth-conduciveness, such as evidence, coherence, or reliability—are traditionally seen as the sole legitimate basis for rational belief. Practical reaso",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,8,8,6,43,2026-02-05T21:44:55.045792,17617,35504,,
+Smortchkova-SeeingGoalDirectedness-2020,"# The Necessity of Motor Resonance for Perceiving Goal-Directed Actions: A Conceptual and Empirical Analysis
+
+## Thesis Clarity (7/8)  
+**Thesis Statement:**  
+Motor resonance—the neural mapping of observed actions onto one’s own motor repertoire—is not strictly necessary for *any* perception of goal-directed actions. However, it is *constitutively necessary* for interpreting the *intentional* or *psychological* goals underlying human actions. This distinction hinges on parsing ""goal-directednes",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,8,7,7,43,2026-02-05T21:44:55.045792,10175,20191,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Title: Motor Resonance and the Perception of Goal-Directed Actions: A Pluralistic Account**
+
+**Introduction**  
+The question of whether motor resonance—the activation of an observer’s motor cortex during the perception of an action—is a necessary mechanism for recognizing goal-directed actions divides cognitive science and philosophy. Proponents argue that simulating observed actions via the mirror neuron system provides a direct, embodied pathway to understanding intentions. Critics, however,",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,7,7,7,6,38,2026-02-05T21:44:55.045792,12236,18846,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Thesis Clarity: 5 | Argumentative Soundness: 6 | Dialectical Engagement: 6 | Precision in Distinctions: 6 | Substantive Contribution: 7 | Quality of Examples: 6 | Total: 36 (Average: 6.0)**  
+
+---
+
+### **Thesis**  
+I argue that **motor resonance—defined as the mapping of observed actions onto one’s own motor repertoire—is not a necessary condition for perceiving goal-directed actions.** While motor resonance plays an important *facilitative* role in certain contexts (e.g., discerning specific ",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,7,6,36,2026-02-05T21:44:55.045792,12818,27256,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Motor Resonance and the Perception of Goal-Directed Actions: A Critical Analysis**  
+
+**Introduction**  
+The question of whether motor resonance—the activation of the observer’s motor system during action observation—is necessary for perceiving goal-directed actions has generated significant debate among philosophers, cognitive scientists, and neuroscientists. Proponents argue that simulating observed actions via the mirror neuron system (MNS) or broader sensorimotor processes is indispensable",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,13126,17489,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Thesis Statement**  
+The view that motor resonance—a process involving the activation of an observer’s motor system in response to perceived actions—is a *necessary* condition for perceiving goal-directed actions is empirically unsustainable and conceptually impoverished. While motor resonance undoubtedly plays a facilitative role in certain contexts, it is neither indispensable nor universally required. Alternative mechanisms, such as visual analysis, contextual inference, and stored conceptu",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:44:55.045792,16503,14142,,
+Viera-SenseTime-2020,"### Response to the Objection Against Sensory Systems for Time
+
+#### **Introduction: Rethinking Temporal Sensitivity**  
+The objection that sensory systems for time cannot exist because time lacks causal efficacy rests on a fundamental category mistake regarding the nature of temporal information processing. Sensory systems, including those for time, do not invariably require direct causal interaction with the properties they measure. Instead, they often detect or track correlates of environment",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,0,False,openrouter/allenai/olmo-3.1-32b-think,7,7,7,7,7,7,42,2026-02-05T21:44:55.045792,17757,22244,,
+Viera-SenseTime-2020,,openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,1,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:44:55.045792,0,4093,,
+Viera-SenseTime-2020,"**A Response to the Objection Against Sensory Systems for Time: Reconceptualizing Temporal Perception as an Integrative, Non-Causal Informational Framework**
+
+The objection that a sensory system for time cannot exist because time itself lacks causal efficacy rests on a narrow conception of sensory mechanisms and a metaphysical misunderstanding of temporal information. I argue that this critique confuses *time as a causal agent* with *time as a dimension in which causal processes occur*, overlook",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,2,False,openrouter/allenai/olmo-3.1-32b-think,6,6,7,7,7,7,40,2026-02-05T21:44:55.045792,15234,15835,,
+Viera-SenseTime-2020,"**The Causal Innocence of Time and the Epistemology of Temporal Perception**  
+
+The objection that a sensory system for time cannot exist because time itself lacks causal efficacy rests on a fundamental confusion between *time as a dimension* and *time as a causal agent*. According to this objection, sensory systems like vision or audition operate by detecting environmental perturbations—such as photons striking the retina—that physically impinge on the organism. Since time, it is argued, cannot",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,3,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,7,7,7,41,2026-02-05T21:44:55.045792,16486,11918,,
+Viera-SenseTime-2020,"**Thesis Statement:**  
+The objection that time cannot be sensed because it lacks causal efficacy rests on a category error: it mistakenly assumes that sensory systems must detect time itself as a causal agent, rather than recognizing that temporal information arises from the structural and causal properties of physical systems calibrated to track *temporal relations*. A sensory mechanism for time does not require time to exert causal force on the mechanism; instead, it leverages the predictable",openrouter/allenai/olmo-3.1-32b-think,rubric_v2_tryhard,4,False,openrouter/allenai/olmo-3.1-32b-think,6,7,7,6,6,7,39,2026-02-05T21:44:55.045792,16109,23651,,
+Builes-ParadoxEvidentialEquivalence-2020,"### The Probability of a Single Head in a Countable Infinity of Fair Coin Flips, Given Only Finitely Many Heads
+
+#### Introduction  
+This essay explores a perplexing problem in probability and epistemology: if we are told that only finitely many heads have occurred in a countable infinity of fair coin flips, what should our subjective credence be that *our own* coin landed heads? The question probes the limits of classical probability theory, Bayesian reasoning, and the challenges of conditionin",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,5,4,4,28,2026-02-05T21:55:38.619245,10164,24789,,
+Builes-ParadoxEvidentialEquivalence-2020,"**Answer:**
+
+The question presents a profound challenge at the intersection of probability theory, Bayesian epistemology, and the philosophy of science. When informed that only finitely many heads occurred in a countably infinite sequence of fair coin flips, one must determine whether their personal credence in their own coin landing heads should remain at \( \frac{1}{2} \) or change. Below, I argue that **the credence should change to \( 0 \)**, while critically engaging with counterarguments r",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,6,5,4,31,2026-02-05T21:55:38.619245,7040,20684,,
+Builes-ParadoxEvidentialEquivalence-2020,"The question of whether one's credence in their own coin landing heads should change upon being informed that only finitely many coins in a countable infinity have landed heads is a deep and subtle problem at the intersection of probability theory, epistemology, and the philosophy of science. Below, I develop a step-by-step argument concluding that **the credence should remain at 1/2**, defending this position through considerations of symmetry, the indeterminacy of conditioning on zero-probabil",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,3,27,2026-02-05T21:55:38.619245,9657,14623,,
+Builes-ParadoxEvidentialEquivalence-2020,"### The Credence of a Single Coin Flip in an Infinite Sequence Conditioned on Finitely Many Heads
+
+The problem presents a scenario involving a countable infinity of fair coin flips, where we are informed that only finitely many coins landed heads. The question is whether this information should alter our credence that *our own* coin landed heads, from the prior probability of 1/2. This problem sits at the intersection of probability theory, philosophical debates about conditionality in infinite ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,4,32,2026-02-05T21:55:38.619245,9421,19125,,
+Builes-ParadoxEvidentialEquivalence-2020,"The question of whether one’s credence in their own coin landing heads should change upon learning that only finitely many coins in a countably infinite set of fair, independent flips resulted in heads is a deep and subtle issue at the intersection of probability theory, philosophy of science, and epistemology. Below, I present a structured argument concluding that one’s credence ought to remain at \( \frac{1}{2} \). This conclusion hinges on symmetry, the nature of conditioning on zero-probabil",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,4,32,2026-02-05T21:55:38.619245,12331,18809,,
+Enoch-FalseConsciousnessLiberals-2020,"**Adaptive Preferences and the Deficit of Autonomy: A Critical Evaluation of Explanatory Accounts**
+
+Autonomy, broadly construed, is the capacity for self-governance—the ability to determine one’s own ends and act accordingly, free from domination by external forces. Central to this concept is the idea that preferences and desires should reflect an individual’s authentic values and choices, rather than mere reactions to constrained circumstances. Adaptive preferences—those shaped in response to ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,5,4,31,2026-02-05T21:55:38.619245,13580,23405,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit in Adaptive Preferences: A Critical Evaluation of Subjectivist, Content-Based, and Historical Accounts**
+
+---
+
+### **Introduction**  
+In moral and political philosophy, the concept of *adaptive preferences*—preferences shaped in response to perceived constraints on feasible options—has emerged as a critical lens for analyzing autonomy in contexts of oppression and inequality. Adaptive preferences arise when individuals adjust their desires and choices due to external limit",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,5,5,5,31,2026-02-05T21:55:38.619245,12767,16788,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit of Adaptive Preferences: A Historical Account of Constraint and Oppression**
+
+---
+
+**Introduction**  
+In recent decades, philosophers have grappled with the concept of *adaptive preferences*—preferences shaped in response to constrained feasible options—and their implications for personal autonomy. When individuals adapt their desires to what is realistically attainable under oppressive or limiting conditions, do these preferences genuinely reflect their authentic agency, ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,5,4,5,29,2026-02-05T21:55:38.619245,15403,14091,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit of Adaptive Preferences: A Critical Examination of Subjectivist, Content-Based, and Historical Accounts**  
+
+### Introduction  
+Adaptive preferences—preferences shaped in response to constrained circumstances, such as poverty, oppression, or limited opportunities—pose a profound challenge to conceptions of personal autonomy. Unlike choices made *within* existing constraints, adaptive preferences involve the internalization of those constraints themselves. For instance, an ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,5,5,31,2026-02-05T21:55:38.619245,13519,18681,,
+Enoch-FalseConsciousnessLiberals-2020,"**The Autonomy Deficit of Adaptive Preferences: A Critical Analysis of Subjectivist, Content-Based, and Historical Accounts**
+
+**Introduction**  
+Adaptive preferences—preferences shaped in response to constrained choices—have long been a focal point in debates about autonomy and oppression. At their core, these preferences arise when individuals internalize limitations imposed by structural inequalities, such as poverty, systemic discrimination, or political repression. The question of *why* ada",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,5,5,32,2026-02-05T21:55:38.619245,15560,17516,,
+Franzn-EvaluativeDiscourseAffective-2020,"The verb 'find' in English, when used with evaluative predicates such as 'tasty', 'beautiful', or 'wrong', poses a significant challenge for philosophers of language and meta-ethicists. Expressivists argue that evaluative statements do not assert factual truths but instead express non-cognitive attitudes, akin to emotions or preferences. If the mental states attributed by 'find' constructions are indeed non-cognitive and affective, this would provide linguistic support for expressivism, as it wo",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,4,5,4,5,28,2026-02-05T21:55:38.619245,14227,17081,,
+Franzn-EvaluativeDiscourseAffective-2020,,openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:55:38.619245,0,2058,,
+Franzn-EvaluativeDiscourseAffective-2020,"### The Non-Cognitive and Affective Nature of ""Find"" States: Linguistic and Conceptual Evidence
+
+#### I. Introduction  
+In recent debates in the philosophy of language and evaluative discourse, the nature of evaluative expressions has been a central topic. Expressivists argue that statements conveying approval or disapproval, such as ""It is wrong to eat meat,"" do not assert factual claims but rather express the speaker’s non-cognitive attitudes. In contrast, cognitive theorists contend that eval",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:55:38.619245,15537,25435,,
+Franzn-EvaluativeDiscourseAffective-2020,"### The Non-Cognitive Nature of 'Find' States and Expressivism: Linguistic and Philosophical Evidence
+
+The verb ""find"" in its evaluative sense—exemplified in utterances like ""Holmes finds Saltimbocca tasty"" or ""She finds lying wrong""—has long intrigued philosophers and linguists as a window into the nature of evaluative discourse. Unlike descriptive predicates, which ascribe objective properties (e.g., ""vegetarian,"" ""made of pasta""), evaluative predicates such as ""tasty,"" ""wrong,"" or ""beautiful""",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,6,4,5,30,2026-02-05T21:55:38.619245,22853,18092,,
+Franzn-EvaluativeDiscourseAffective-2020,"**Essay: The Non-Cognitive Nature of ""Find"" and Its Implications for Expressivism**
+
+---
+
+### Introduction  
+The verb ""find"" in English exhibits a striking linguistic peculiarity: it readily combines with evaluative predicates (e.g., ""tasty,"" ""beautiful,"" ""wrong"") but resists pairing with purely descriptive ones (e.g., ""vegetarian,"" ""made of pasta""). This syntactic asymmetry has implications for debates in metaethics, particularly for expressivism—the view that evaluative statements (e.g., ""It i",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:55:38.619245,15197,27788,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Causal Decision Theory and the Problem of Action-Probability Dependence in the Death in Damascus Paradox**
+
+### Introduction  
+The Death in Damascus paradox presents a profound challenge to decision-theoretic frameworks, particularly Causal Decision Theory (CDT). In this scenario, a predictor (here, ""Death"") foretells an agent’s choice between two actions—traveling to Aleppo or Damascus—with near-perfect accuracy but imperfect reliability. Death places a trap in the city they predict the agent",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,5,29,2026-02-05T21:55:38.619245,13462,17506,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Causal Decision Theory and the Pathology of Self-Referential Dependence in the Death in Damascus**  
+
+Causal Decision Theory (CDT) is a prominent framework for rational decision-making under uncertainty, advocating the maximization of expected utility based on the causal consequences of one’s actions. However, its application to scenarios like the *Death in Damascus* paradox reveals a potential pathology: the dependence of CDT’s recommendations on an agent’s current subjective probabilities of",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,5,4,5,29,2026-02-05T21:55:38.619245,12426,16093,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### Causal Decision Theory and the Paradox of Act Probabilities in the Death in Damascus Scenario
+
+Causal Decision Theory (CDT) is a prominent framework for normative decision-making, asserting that rational agents should choose actions by maximizing expected utility, where the expected utility of an action is determined by the causal consequences of that action. Specifically, CDT evaluates the expected utility of each action \( A \) by conditioning only on *causal* effects of \( A \), using unc",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,6,4,5,30,2026-02-05T21:55:38.619245,19067,23902,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"**Causal Decision Theory and the Paradox of Shifting Act Probabilities in the Death in Damascus Scenario**  
+
+Causal Decision Theory (CDT) is a prominent framework for rational decision-making that evaluates the rationality of an action by its expected utility, calculated as the sum of the utilities of possible outcomes weighted by their causal probabilities conditional on the action. Formally, the expected utility (\(EU\)) of an action \(A\) is:  
+\[
+EU(A) = \sum_{O} U(O) \cdot P(O | A),
+\]  
+w",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,4,4,5,6,4,5,28,2026-02-05T21:55:38.619245,13200,29953,,
+GALLOW-CAUSALDECISIONTHEORISTS-2020,"### The Problem of Act Probability Dependence in Causal Decision Theory: A Critical Analysis
+
+The question of whether Causal Decision Theory (CDT) is compromised by its dependence on an agent’s act probabilities in ""Death in Damascus""-style scenarios probes a deep tension between causal reasoning and self-referential decision problems. I will argue that this dependence *is* a problem for CDT, as it exposes three core vulnerabilities: **circularity in decision-making**, **sensitivity to irrelevan",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:55:38.619245,12135,24030,,
+ISSEROW-MORALWORTH-2020,"**Title: Duty, Motive, and Moral Praise: A Critical Examination**
+
+---
+
+### **Introduction**  
+The question of whether actions motivated *solely* by a duty to do what is morally right can secure genuine moral praise lies at the intersection of metaphysics, ethics, and human psychology. Critics, invoking figures such as David Hume and contemporary relational ethicists, argue that such motives risk reducing morality to an abstract formalism, alienating agents from the lived experiences and concret",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,5,5,4,30,2026-02-05T21:55:38.619245,14232,21690,,
+ISSEROW-MORALWORTH-2020,"**Essay: Can Acting Solely from a Desire to Do What is Morally Right Suffice for Moral Worth?**
+
+---
+
+**Introduction**  
+The question of what constitutes morally worthy conduct lies at the heart of ethical inquiry. A persistent debate centers on the role of motive: must praiseworthy actions be driven by specific, concrete considerations—such as empathy, altruism, or a commitment to human flourishing—or is a general, abstract desire to “do what is morally right” sufficient? Critics of purely duty",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,5,5,4,31,2026-02-05T21:55:38.619245,12503,17260,,
+ISSEROW-MORALWORTH-2020,"**Can Acting Solely from a Desire to Do What is Morally Right Sufficient for Moral Worth?**
+
+The question of whether actions motivated purely by a desire to fulfill moral duties can attain genuine moral worth has sparked intense debate in moral philosophy. Critics argue that such motives exhibit a form of moral fetishism, divorced from the concrete goods that morality seeks to protect, such as human well-being or justice. Conversely, defenders—particularly those influenced by Immanuel Kant’s deo",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,4,4,28,2026-02-05T21:55:38.619245,13268,12047,,
+ISSEROW-MORALWORTH-2020,"**Can Acting Solely from a Desire to Do What is Morally Right Sufficient for Moral Praise?**
+
+---
+
+**Introduction**  
+The question of what constitutes moral praise lies at the heart of ethical theory. A central debate concerns whether a motive rooted purely in a general desire to act according to moral principles—rather than in concern for specific consequences or affiliations with substantive values—can ground genuine moral worth. Critics argue that such ""duty-based"" motivation exemplifies mora",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,4,5,5,5,4,3,26,2026-02-05T21:55:38.619245,12348,13576,,
+ISSEROW-MORALWORTH-2020,,openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:55:38.619245,0,2352,,
+Jenkin-EpistemicRoleCore-2020,"**Epistemic Basing and Conscious Awareness: A Critical Examination**
+
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based on those reasons lies at the intersection of epistemology, philosophy of mind, and cognitive science. Proponents of the necessity of awareness argue that reasons must be accessible to the agent for evaluation, correction, and rational deliberation. Conversely, critics contend that unconscious or automatic cognitive ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,5,33,2026-02-05T21:55:38.619245,17041,17754,,
+Jenkin-EpistemicRoleCore-2020,"### The Necessity of Conscious Awareness for Epistemic Basing: A Critical Analysis
+
+#### Introduction
+
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically based—and thereby capable of possessing an epistemic status as justified or unjustified—lies at the intersection of epistemology, philosophy of mind, and cognitive science. This debate has intensified with the rise of theories positing that modular, automatic cognitive processes can genera",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,5,5,30,2026-02-05T21:55:38.619245,16237,27271,,
+Jenkin-EpistemicRoleCore-2020,"**Essay: Conscious Awareness and Epistemic Basing in Modular Cognition**  
+
+**Introduction**  
+The question of whether conscious awareness of one’s reasons is necessary for a mental state to possess epistemic justification lies at the intersection of epistemology, cognitive science, and philosophy of mind. Critics of the necessity of awareness argue that modular, automatic processes—such as perceptual recognition or subconscious inference—can generate reliable beliefs that are epistemically grou",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,4,5,32,2026-02-05T21:55:38.619245,13388,15913,,
+Jenkin-EpistemicRoleCore-2020,"**Title: Conscious Awareness and Epistemic Basing: A Critical Examination**
+
+---
+
+### **Introduction**  
+The question of whether conscious awareness of reasons is necessary for a mental state to be epistemically justified lies at the heart of enduring debates in epistemology and cognitive science. Internalists argue that justification demands an agent’s cognitive access to the reasons supporting their beliefs, while externalists contend that objective features—such as reliability or causal sensi",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,6,6,34,2026-02-05T21:55:38.619245,13575,12626,,
+Jenkin-EpistemicRoleCore-2020,"### Epistemic Basing, Conscious Awareness, and Modular Cognition: A Philosophical Analysis
+
+The question of whether a mental state can possess epistemic status—such as justification or unjustifiedness—without the subject being consciously aware of the reasons underlying it challenges fundamental assumptions in epistemology. Some philosophers argue that epistemic basing, the relationship between a belief and its supporting reasons, necessitates conscious awareness of those reasons. This position ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,5,5,4,5,30,2026-02-05T21:55:38.619245,15308,21069,,
+Koskinen-DefendingRiskAccount-2020,"**The Relationship Between Scientific Objectivity and Trust: A Refined Account**
+
+**Introduction**  
+The proposition that scientific objectivity is fundamentally grounded in trust has garnered attention in recent philosophy of science, notably in the work of Arthur Fine and Heather Douglas. Fine, in his natural ontological attitude, suggests that scientific practices implicitly rely on trust in methodologies and institutional norms, while Douglas emphasizes how trust in communal critique underpi",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,6,6,35,2026-02-05T21:55:38.619245,13484,19794,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: Toward a Precise Account  
+
+The question of how scientific objectivity relates to trust has become a focal point in contemporary philosophy of science, particularly in the work of Arthur Fine and Heather Douglas. Both scholars have proposed that trust is a common thread among the various senses of scientific objectivity—such as procedural, convergent, and interactive objectivity. While their analysis offers valuable insights, the cha",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,6,5,33,2026-02-05T21:55:38.619245,13466,16760,,
+Koskinen-DefendingRiskAccount-2020,"### The Relationship Between Scientific Objectivity and Trust: A Critical Analysis
+
+**Introduction**  
+The concept of scientific objectivity lies at the heart of debates about the authority and reliability of scientific knowledge. Philosophers of science such as Arthur Fine and Heather Douglas have argued that the diverse senses of objectivity—procedural, convergent, and interactive—share a common foundation in *trust*. According to this view, when scientists deem a claim or method “objective,” ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,6,6,6,6,6,6,36,2026-02-05T21:55:38.619245,15752,15128,,
+Koskinen-DefendingRiskAccount-2020,"**The Relationship Between Scientific Objectivity and Trust: A Precise Account**  
+
+### Introduction  
+The concept of scientific objectivity has long been a cornerstone of epistemological debates, traditionally framed as the pursuit of truth independent of human subjectivity. However, recent philosophical work by Arthur Fine and Heather Douglas challenges this view, proposing that scientific objectivity—manifesting in procedural, convergent, and interactive forms—shares a foundational basis in *",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,6,6,5,32,2026-02-05T21:55:38.619245,12965,19761,,
+Koskinen-DefendingRiskAccount-2020,"**The Relationship Between Scientific Objectivity and Trust: A Critical Analysis and Proposal for a Precise Account**
+
+### Introduction  
+The notion that scientific objectivity is fundamentally tied to trust has gained traction in contemporary philosophy of science, particularly through the work of Arthur Fine and Heather Douglas. Fine posits that procedural objectivity—rooted in adherence to methodological rules—rests on trust in shared practices, while Douglas argues that *interactive objectiv",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,4,5,5,5,30,2026-02-05T21:55:38.619245,12351,15069,,
+Maguire-GameBelief-2020,"**The Interplay of Epistemic and Practical Reasons in Doxastic Normativity: A Philosophical Inquiry**
+
+**Introduction**  
+The normativity of belief—what one *ought* to believe—has long been a cornerstone of epistemological inquiry. Traditionally, this question has been dominated by epistemic considerations: beliefs should align with truth, be justified by evidence, and adhere to principles of rationality. However, contemporary debates increasingly recognize that practical reasons—concerning util",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,5,5,5,5,30,2026-02-05T21:55:38.619245,15640,23417,,
+Maguire-GameBelief-2020,"**The Interaction of Epistemic and Practical Reasons in Belief Formation: A Philosophical Analysis**
+
+---
+
+### Introduction  
+The question of how epistemic and practical reasons bear on what one *ought* to believe—and how these fundamentally distinct types of reasons might interact—lies at the intersection of epistemology, ethics, and philosophy of action. Epistemic reasons concern truth-conduciveness: they evaluate beliefs according to evidence, logical coherence, and warrant. Practical reasons",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,5,4,31,2026-02-05T21:55:38.619245,17622,14817,,
+Maguire-GameBelief-2020,"**The Interaction of Epistemic and Practical Reasons in Determining What One Ought to Believe**  
+
+**Introduction**  
+The normativity of belief lies at the intersection of epistemology and philosophy of action, raising profound questions about what one ought to believe and why. Traditionally, epistemology has focused on how beliefs should be formed—emphasizing truth-conduciveness, evidential support, and rational justification. In this view, practical considerations, such as the utility, moralit",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,4,4,5,4,4,26,2026-02-05T21:55:38.619245,15435,19385,,
+Maguire-GameBelief-2020,"**The Interplay of Epistemic and Practical Reasons in Determining What One Ought to Believe**
+
+### Introduction: The Problem of Normative Incommensurability  
+The question of what one *ought* to believe has long been a central concern in epistemology and philosophy more broadly. Traditionally, epistemology focuses on truth-conducive norms: beliefs should be grounded in evidence, reason, and justified inference. However, a growing body of work argues that practical considerations—such as the cons",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,5,6,5,33,2026-02-05T21:55:38.619245,17587,20840,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Is Motor Resonance Necessary for the Perception of Goal-Directed Actions?**
+
+The question of whether motor resonance—the mapping of observed actions onto one’s own motor repertoire—is a necessary condition for perceiving goal-directed actions has ignited debates across neuroscience, cognitive science, and philosophy. Proponents argue that simulating observed actions via motor resonance is essential for understanding intentions and goals, while critics contend that goal-directed actions can be ",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,4,5,32,2026-02-05T21:55:38.619245,12193,21470,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Motor Resonance and the Perception of Goal-Directed Actions: A Philosophical Analysis**
+
+**Introduction**  
+The question of whether motor resonance—the activation of an observer’s motor system during the perception of another’s action—is a necessary condition for recognizing goal-directed behavior lies at the intersection of philosophy, cognitive science, and neuroscience. Proponents of motor resonance argue that simulating observed actions via one’s own motor repertoire is essential for under",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,3,5,5,5,4,5,27,2026-02-05T21:55:38.619245,12380,21063,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Motor Resonance and the Perception of Goal-Directed Actions: A Critical Analysis**  
+
+The question of whether motor resonance—the phenomenon wherein the observation of another’s action activates the observer’s own motor representations—is a necessary condition for perceiving goal-directed actions has ignited significant debate across cognitive science, neuroscience, and philosophy. Proponents of motor resonance argue that simulating observed actions through the mirror neuron system or embodied",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,6,5,5,32,2026-02-05T21:55:38.619245,17251,15758,,
+Smortchkova-SeeingGoalDirectedness-2020,"**Title: Motor Resonance and the Perception of Goal-Directed Actions: Necessity or Coexistence?**
+
+---
+
+**Introduction**  
+The question of whether motor resonance—defined as the mapping of an observed action onto one’s own motor repertoire—is a necessary condition for perceiving goal-directed actions sits at the nexus of cognitive science, neuroscience, and philosophy. Proponents of the motor resonance hypothesis argue that the human capacity to understand intentional behavior fundamentally depe",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,5,4,5,30,2026-02-05T21:55:38.619245,15494,19835,,
+Viera-SenseTime-2020,,openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,0,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:55:38.619245,0,2849,,
+Viera-SenseTime-2020,"**The Measurement of Time as a Sensory Capability: A Response to the Causal Impotence Objection**  
+
+**Introduction**  
+The philosophical objection that time cannot be a genuine object of sensory perception hinges on the claim that sensory systems require causal interaction with their objects, and since time is causally impotent, it cannot be sensed. This essay argues that this conclusion is premature, as temporal information can be derived indirectly through physical systems whose regular, law-",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,1,False,openrouter/allenai/olmo-3.1-32b-think,5,5,6,5,5,6,32,2026-02-05T21:55:38.619245,14051,24181,,
+Viera-SenseTime-2020,"**A Response to the Objection Against Sensory Systems for Time**
+
+**Introduction**  
+The objection under consideration asserts that a genuine sensory system for time cannot exist because sensory systems, by their nature, rely on causal interactions between organisms and environmental features. Whereas phenomena like vision involve photons impacting the retina, time—often regarded as causally impotent—cannot exert forces or transfer energy. This essay challenges this objection by arguing that the",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,2,False,openrouter/allenai/olmo-3.1-32b-think,5,6,6,6,5,6,34,2026-02-05T21:55:38.619245,13122,16536,,
+Viera-SenseTime-2020,,openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,3,False,openrouter/allenai/olmo-3.1-32b-think,0,0,0,0,0,0,0,2026-02-05T21:55:38.619245,0,3813,,
+Viera-SenseTime-2020,"**Response to the Objection Against a Sensory System for Time**
+
+The objection that a sensory system for time cannot exist because time is causally impotent raises profound questions about the nature of time, causation, and sensory experience. At its core, the argument assumes that sensory systems must rely on direct causal influence from the environmental feature they detect—such as photons causing retinal excitation in vision. Since time, it is claimed, cannot exert causal force, it follows th",openrouter/allenai/olmo-3.1-32b-think,v2_tryhard_norubric,4,False,openrouter/allenai/olmo-3.1-32b-think,4,5,5,6,5,5,30,2026-02-05T21:55:38.619245,13777,18905,,
