@@ -59,6 +59,15 @@ allenai/olmo-3.1-32b-think
 
 
 
+python generate_answers.py --model openai/gpt-4o --prompt answer_without_rubric_2k --samples 15 --data-version v2_4o --grade --grader openai/gpt-4o --run-name norubric
+python generate_answers.py --model openai/gpt-4o --prompt answer_with_rubric_2k --samples 15 --data-version v2_4o --grade --grader openai/gpt-4o --run-name rubric  && \
+python generate_answers.py --model openai/gpt-4o --prompt rubric_v2_tryhard --samples 15 --data-version v2_4o --grade --grader openai/gpt-4o --run-name rubric_tryhard  && \
+python generate_answers.py --model openai/gpt-4o --prompt v2_tryhard_norubric --samples 15 --data-version v2_4o --grade --grader openai/gpt-4o --run-name norubric_tryhard
+
+
+python generate_answers.py --model openai/gpt-4o --prompt rubric_v2_tryhard --samples 2 --question 4,5 --data-version v2_4o_test --grade --grader openai/gpt-4o --run-name norubrictest
+
+
 ```json
 {
   "question": "Can acting solely from a desire to do what is morally right (de dicto)—that is, from a concern for morality as such rather than from direct concern for the specific considerations that make an action right—suffice to make one's action morally praiseworthy? Critics of the Kantian position have argued that such motivation reflects mere rule-following or even a kind of moral fetishism, where the agent is alienated from the concrete ends at which morality properly aims. How might a defender of the moral worth of acting from duty respond to these charges?",

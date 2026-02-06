@@ -1,0 +1,13 @@
+{
+  "model": "openai/gpt-4o",
+  "prompt_variant": "rubric_v2_tryhard",
+  "n_samples": 2,
+  "temperature": 1.0,
+  "provider": null,
+  "question_indices": "4,5",
+  "rubric": "response_rubric_v2",
+  "data_version": "v2_4o_test",
+  "timestamp": "20260206_120017",
+  "n_questions": 2,
+  "sample_start": 0
+}

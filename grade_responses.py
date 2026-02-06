@@ -63,7 +63,9 @@ def build_grading_prompt(question: str, answer: str, rubric: str) -> str:
 
 ## Grading Rubric
 
-{rubric}"""
+{rubric}
+
+First think through what grades the response deserves, then put your final answer in a ```json block."""
 
 
 def parse_grade_response(response_text: str) -> dict:

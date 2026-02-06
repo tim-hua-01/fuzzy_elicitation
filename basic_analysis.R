@@ -368,8 +368,8 @@ cat("P(X >= 2):", prob, "\n")
 # Does prompt format predict pairwise outcomes beyond score?
 # ============================================================
 
-pw <- read_csv("data/v2/stratified_test.csv")
-
+pw <- read_csv("data/v2/stratified_real.csv")
+pwr <- read_csv("data/v2/stratified_wrong_ins.csv")
 # Map prompt variants to binary features:
 #   answer_with_rubric_2k    -> rubric=1, tryhard=0
 #   answer_without_rubric_2k -> rubric=0, tryhard=0
@@ -384,6 +384,25 @@ pw %<>% mutate(
   high_has_tryhard = high_prompt_variant %in% tryhard_variants,
   low_has_tryhard  = low_prompt_variant  %in% tryhard_variants
 )
+
+pwr %<>% mutate(
+  high_has_rubric  = high_prompt_variant %in% rubric_variants,
+  low_has_rubric   = low_prompt_variant  %in% rubric_variants,
+  high_has_tryhard = high_prompt_variant %in% tryhard_variants,
+  low_has_tryhard  = low_prompt_variant  %in% tryhard_variants
+)
+
+feols(model_picked_high == "True" ~ 1, 
+      data = pw %>% filter(model_picked_high != 'disagree'
+                           ), weights = ~weight, vcov = ~question_id)
+
+feols(model_picked_high == "True" ~ as.factor(high_prompt_variant), 
+      data = pw %>% filter(model_picked_high != 'disagree'
+      ), weights = ~weight, vcov = ~question_id)
+
+feols(model_picked_high == "True" ~ as.factor(low_prompt_variant), 
+      data = pw %>% filter(model_picked_high != 'disagree'
+      ), weights = ~weight, vcov = ~question_id)
 
 # Only keep pairs where both orderings agreed
 pw_agreed <- pw %>% filter(model_picked_high != "disagree")
@@ -451,5 +470,14 @@ modelsummary(
 #   > 0.5: feature genuinely improves quality beyond what the score captures
 #   < 0.5: feature inflates scores without improving real quality
 #   = 0.5: feature effect is fully captured by the rubric score
+
+pw %>% filter(model_picked_high != 'disagree') %>% filter(high_prompt_variant == 'rubric_v2_tryhard' & 
+                low_prompt_variant == 'answer_with_rubric_2k') %>% 
+  summarise(mean(model_picked_high == "True"), n())
+  
+
+pw %>% filter(model_picked_high != 'disagree') %>% filter(low_prompt_variant == 'rubric_v2_tryhard' & 
+                                                             high_prompt_variant == 'answer_with_rubric_2k') %>% 
+  summarise(mean(model_picked_high == "True"), n())
 
 

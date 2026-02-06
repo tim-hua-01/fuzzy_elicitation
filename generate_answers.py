@@ -70,6 +70,30 @@ def format_prompt(template: str, question: str, rubric: str) -> str:
     return result
 
 
+GPT4O_THINK_ANSWER_SUFFIX = (
+    "\n\nFirst think through and plan out your response in <think></think> tags. "
+    "After you are done, return the actual essay in the <answer></answer> tags"
+)
+
+
+def parse_think_answer_tags(content: str) -> tuple[str, str | None]:
+    """Parse <think> and <answer> tags from response content.
+
+    Returns (answer_text, reasoning_text).
+    Raises ValueError if <answer> tags are not found.
+    """
+    think_match = re.search(r"<think>(.*?)</think>", content, re.DOTALL)
+    reasoning = think_match.group(1).strip() if think_match else None
+
+    answer_match = re.search(r"<answer>(.*?)</answer>", content, re.DOTALL)
+    if not answer_match:
+        return content, content
+
+    answer = answer_match.group(1).strip()
+
+    return answer, reasoning
+
+
 def load_questions() -> list[dict]:
     """Load questions from main_questions.jsonl."""
     questions_path = Path(__file__).parent / "main_questions.jsonl"
@@ -197,6 +221,11 @@ async def generate_single_sample(
     question_text = question["question"]
     prompt = format_prompt(template, question_text, rubric)
 
+    # For openai/gpt-4o, append think/answer tag instructions
+    uses_think_tags = model == "openai/gpt-4o"
+    if uses_think_tags:
+        prompt += GPT4O_THINK_ANSWER_SUFFIX
+
     if is_openai:
         response_data = await generate_openai_single(
             semaphore, client, prompt, model, temperature
@@ -206,10 +235,18 @@ async def generate_single_sample(
             semaphore, http_client, api_key, prompt, model, temperature, provider
         )
 
+    # For openai/gpt-4o, parse <think>/<answer> tags from response
+    content = response_data["content"]
+    reasoning = response_data.get("reasoning")
+    if uses_think_tags and content:
+        content, parsed_reasoning = parse_think_answer_tags(content)
+        if parsed_reasoning:
+            reasoning = parsed_reasoning
+
     entry = {
         "question_id": question_id,
         "question": question_text,
-        "answer": response_data["content"],
+        "answer": content,
         "model": model,
         "prompt_variant": prompt_name,
         "sample_idx": sample_idx,
@@ -217,8 +254,8 @@ async def generate_single_sample(
     }
 
     # Include reasoning if present
-    if response_data.get("reasoning"):
-        entry["reasoning"] = response_data["reasoning"]
+    if reasoning:
+        entry["reasoning"] = reasoning
 
     # Include token counts if present (OpenAI models)
     if response_data.get("output_tokens") is not None:
