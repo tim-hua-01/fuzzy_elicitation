@@ -363,3 +363,93 @@ cat("P(X = 1):", p1, "\n")
 cat("P(X >= 2):", prob, "\n")
 
 
+# ============================================================
+# PAIRWISE COMPARISON ANALYSIS
+# Does prompt format predict pairwise outcomes beyond score?
+# ============================================================
+
+pw <- read_csv("data/v2/stratified_test.csv")
+
+# Map prompt variants to binary features:
+#   answer_with_rubric_2k    -> rubric=1, tryhard=0
+#   answer_without_rubric_2k -> rubric=0, tryhard=0
+#   rubric_v2_tryhard        -> rubric=1, tryhard=1
+#   v2_tryhard_norubric      -> rubric=0, tryhard=1
+rubric_variants  <- c("answer_with_rubric_2k", "rubric_v2_tryhard")
+tryhard_variants <- c("rubric_v2_tryhard", "v2_tryhard_norubric")
+
+pw %<>% mutate(
+  high_has_rubric  = high_prompt_variant %in% rubric_variants,
+  low_has_rubric   = low_prompt_variant  %in% rubric_variants,
+  high_has_tryhard = high_prompt_variant %in% tryhard_variants,
+  low_has_tryhard  = low_prompt_variant  %in% tryhard_variants
+)
+
+# Only keep pairs where both orderings agreed
+pw_agreed <- pw %>% filter(model_picked_high != "disagree")
+
+# --- RUBRIC ANALYSIS ---
+# Subset: exactly one entry has a rubric, the other doesn't
+# Recode so A = rubric entry, B = non-rubric entry
+pw_rubric <- pw_agreed %>%
+  filter(high_has_rubric != low_has_rubric) %>%
+  mutate(
+    # A = the entry with rubric, B = the entry without
+    a_score = ifelse(high_has_rubric, high_total, low_total),
+    b_score = ifelse(high_has_rubric, low_total, high_total),
+    score_diff = a_score - b_score,  # positive = rubric entry scored higher
+    a_wins = as.numeric(
+      (high_has_rubric & model_picked_high == "True") |
+      (low_has_rubric  & model_picked_high == "False")
+    )
+  )
+
+# --- TRYHARD ANALYSIS ---
+# Subset: exactly one entry has tryhard, the other doesn't
+# Recode so A = tryhard entry, B = non-tryhard entry
+pw_tryhard <- pw_agreed %>%
+  filter(high_has_tryhard != low_has_tryhard) %>%
+  mutate(
+    a_score = ifelse(high_has_tryhard, high_total, low_total),
+    b_score = ifelse(high_has_tryhard, low_total, high_total),
+    score_diff = a_score - b_score,  # positive = tryhard entry scored higher
+    a_wins = as.numeric(
+      (high_has_tryhard & model_picked_high == "True") |
+      (low_has_tryhard  & model_picked_high == "False")
+    )
+  )
+
+cat("\n=== Rubric subset (A=rubric, B=no rubric) ===\n")
+cat("N pairs:", nrow(pw_rubric), "\n")
+cat("P(rubric wins):", mean(pw_rubric$a_wins), "\n")
+cat("Score diff (A-B) range:", min(pw_rubric$score_diff), "to", max(pw_rubric$score_diff), "\n")
+
+cat("\n=== Tryhard subset (A=tryhard, B=no tryhard) ===\n")
+cat("N pairs:", nrow(pw_tryhard), "\n")
+cat("P(tryhard wins):", mean(pw_tryhard$a_wins), "\n")
+cat("Score diff (A-B) range:", min(pw_tryhard$score_diff), "to", max(pw_tryhard$score_diff), "\n")
+
+# LPM: P(A wins) ~ score_diff + score_diff^2
+# Intercept = P(feature-holder wins) when scores are tied
+# score_diff = how much each point of A's score advantage increases win prob
+
+rubric_m1 <- feols(a_wins ~ score_diff + I(score_diff^2),
+                   data = pw_rubric, vcov = ~question_id)
+
+tryhard_m1 <- feols(a_wins ~ score_diff + I(score_diff^2),
+                    data = pw_tryhard, vcov = ~question_id)
+
+modelsummary(
+  list("P(rubric wins)" = rubric_m1, "P(tryhard wins)" = tryhard_m1),
+  statistic = "conf.int",
+  stars = TRUE,
+  gof_omit = "IC|Log|FE|RMSE",
+  title = "LPM: P(feature-holder wins) controlling for score gap (A-B)"
+)
+
+# Interpretation of the INTERCEPT (the key number):
+#   > 0.5: feature genuinely improves quality beyond what the score captures
+#   < 0.5: feature inflates scores without improving real quality
+#   = 0.5: feature effect is fully captured by the rubric score
+
+
