@@ -1,0 +1,13 @@
+{
+  "model": "openai/gpt-4o",
+  "prompt_variant": "answer_without_rubric_2k",
+  "n_samples": 15,
+  "temperature": 1.0,
+  "provider": null,
+  "question_indices": null,
+  "rubric": "response_rubric_v2",
+  "data_version": "v2_4o",
+  "timestamp": "20260206_200919",
+  "n_questions": 10,
+  "sample_start": 0
+}
