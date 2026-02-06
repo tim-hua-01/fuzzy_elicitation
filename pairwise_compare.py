@@ -31,7 +31,7 @@ load_dotenv()
 
 MAX_CONCURRENT = 25
 
-COMPARISON_PROMPT_TEMPLATE = """You are an expert philosophy evaluator. You will be shown a philosophical question and two responses to that question. Your task is to judge which response is the better holistically.
+COMPARISON_PROMPT_TEMPLATE = """You are an expert philosophy evaluator. You will be shown a philosophical question and two responses to that question. Your task is to holistically judge which response is better argued.
 
 ## Question
 
